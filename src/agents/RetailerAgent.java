@@ -13,6 +13,7 @@ public class RetailerAgent extends Agent
 		if(args!=null)
 		{
 			retailer = (Retailer)args[0];
+			System.out.println(retailer.getName() + " is up.");
 		}
 	}
 }

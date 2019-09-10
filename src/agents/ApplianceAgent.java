@@ -13,6 +13,7 @@ public class ApplianceAgent extends Agent
 		if(args!=null)
 		{
 			appliance = (Appliance)args[0];
+			System.out.println(appliance.getName() + " is up.");
 		}
 	}
 }

@@ -14,6 +14,7 @@ public class HomeAgent extends Agent
 		if(args!=null)
 		{
 			home = (Home)args[0];
+			System.out.println("Home agent is up.");
 		}
 	}
 }
