@@ -1,13 +1,18 @@
 package agents;
 
 import jade.core.Agent;
+import models.Retailer;
 
 public class RetailerAgent extends Agent
 {
+	protected Retailer retailer;
 	@Override
 	protected void setup()
 	{
-		// TODO Auto-generated method stub
-		super.setup();
+		Object[] args = getArguments();
+		if(args!=null)
+		{
+			retailer = (Retailer)args[0];
+		}
 	}
 }
