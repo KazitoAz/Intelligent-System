@@ -1,4 +1,3 @@
-# COS30018-Intelligent Systems
 # Home Energy Trading System 
 ### Project requirements
 1. Eclipse
@@ -7,6 +6,10 @@
 
 ### Group members: 
 XUANZHE FENG 101050064
+
 ZICONG HUANG 101318649
+
 KAIDI WANG   101649048
+
 JUNJIE TIAN  101273968
+
