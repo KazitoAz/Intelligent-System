@@ -49,17 +49,17 @@ public class HomeEnergyTradingProgram
 				new Retailer("EnergyAustralia",0.22f,0.32f,true)
 		};
 		
-		Object[][] applianceArgs = new Object[3][1];
+		Object[][] applianceArgs = new Object[3][2];
 		Object[][] retailerArgs = new Object[3][1];
-		
+		Home home = new Home();
+		Object[] homeArg = new Object[4];
+		homeArg[0] = home;
 		for (int i = 0; i < 3; i++)
 		{
 			applianceArgs[i][0] = appliances[i];
+			applianceArgs[i][1] = "HomeAgent1";
 			retailerArgs[i][0] = retailers[i];
 		}
-		
-		Home home = new Home();
-		Object[] homeArg = {home};
 		
 		AgentController rc;
 		AgentController ac;
@@ -70,6 +70,7 @@ public class HomeEnergyTradingProgram
 			{
 				ac = applianceContainer.createNewAgent(appliances[i].getName(), "agents.ApplianceAgent", applianceArgs[i]);
 				rc = retailerContainer.createNewAgent(retailers[i].getName(), "agents.RetailerAgent", retailerArgs[i]);
+				homeArg[i+1] = retailers[i].getName();
 				ac.start();
 				rc.start();
 			}
