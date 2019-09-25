@@ -14,6 +14,7 @@ public class HomeAgent extends Agent
 	private Home home;
 	private Vector<String> retailerAgents;
 	@Override
+
 	protected void setup()
 	{
 		Object[] args = getArguments();
