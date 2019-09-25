@@ -1,5 +1,5 @@
 package models;
-
+import java.util.Random;
 public class Appliance
 {
 	private String name;
@@ -18,6 +18,8 @@ public class Appliance
 	
 	public float getConsumeRate()
 	{
+		Random rand = new Random();
+		consumeRate = 10 - rand.nextInt(20);
 		return consumeRate;
 	}
 	
