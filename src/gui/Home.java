@@ -1,4 +1,3 @@
-package gui;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -36,6 +35,13 @@ public class Home extends JFrame {
 	private JTextField textField;
 	private JTextField txtAmount;
 	private JTextField txtTotalAmount;
+	private JTextField txtTotalUsage;
+	private JTextField txtSolarPanels;
+	private JTextField txtAirConditioner;
+	private JTextField txtDishWasher;
+	private JTextField txtWashingMachine;
+	private JTextField textField_5;
+	private JTextField textField_6;
 
 	/**
 	 * Launch the application.
@@ -137,19 +143,65 @@ public class Home extends JFrame {
 		txtAmount.setFont(new Font("Arial", Font.PLAIN, 16));
 		txtAmount.setBackground(Color.WHITE);
 		txtAmount.setText("Amount: ");
-		txtAmount.setBounds(698, 40, 148, 49);
+		txtAmount.setBounds(698, 97, 148, 49);
 		contentPane.add(txtAmount);
 		txtAmount.setColumns(10);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(698, 134, 480, 25);
+		separator.setBounds(698, 182, 480, 25);
 		contentPane.add(separator);
 		
 		txtTotalAmount = new JTextField();
 		txtTotalAmount.setFont(new Font("Arial", Font.PLAIN, 16));
 		txtTotalAmount.setText("Total Amount: ");
-		txtTotalAmount.setBounds(698, 138, 148, 43);
+		txtTotalAmount.setBounds(698, 190, 148, 43);
 		contentPane.add(txtTotalAmount);
 		txtTotalAmount.setColumns(10);
+		
+		txtTotalUsage = new JTextField();
+		txtTotalUsage.setText("Total Usage");
+		txtTotalUsage.setFont(new Font("Arial", Font.PLAIN, 16));
+		txtTotalUsage.setColumns(10);
+		txtTotalUsage.setBackground(Color.WHITE);
+		txtTotalUsage.setBounds(698, 40, 148, 49);
+		contentPane.add(txtTotalUsage);
+		
+		txtSolarPanels = new JTextField();
+		txtSolarPanels.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSolarPanels.setText("Solar Panels");
+		txtSolarPanels.setBounds(10, 479, 305, 55);
+		contentPane.add(txtSolarPanels);
+		txtSolarPanels.setColumns(10);
+		
+		txtAirConditioner = new JTextField();
+		txtAirConditioner.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtAirConditioner.setText("Air Conditioner");
+		txtAirConditioner.setColumns(10);
+		txtAirConditioner.setBounds(325, 479, 305, 55);
+		contentPane.add(txtAirConditioner);
+		
+		txtDishWasher = new JTextField();
+		txtDishWasher.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtDishWasher.setText("Dish Washer");
+		txtDishWasher.setColumns(10);
+		txtDishWasher.setBounds(10, 544, 305, 55);
+		contentPane.add(txtDishWasher);
+		
+		txtWashingMachine = new JTextField();
+		txtWashingMachine.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtWashingMachine.setText("Washing Machine");
+		txtWashingMachine.setColumns(10);
+		txtWashingMachine.setBounds(325, 544, 305, 55);
+		contentPane.add(txtWashingMachine);
+		
+		textField_5 = new JTextField();
+		textField_5.setColumns(10);
+		textField_5.setBounds(10, 609, 305, 55);
+		contentPane.add(textField_5);
+		
+		textField_6 = new JTextField();
+		textField_6.setColumns(10);
+		textField_6.setBounds(325, 609, 305, 55);
+		contentPane.add(textField_6);
 	}
 }
