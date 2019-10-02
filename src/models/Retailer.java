@@ -5,7 +5,7 @@ import java.util.Random;
 public class Retailer
 {
 	private String name;
-	private boolean isFixed;
+	private boolean fixed;
 	private double sellPricePerUnit;
 	private double buyPricePerUnit;
 	
@@ -14,7 +14,7 @@ public class Retailer
 		name = _name;
 		sellPricePerUnit = _sellPrice;
 		buyPricePerUnit = _buyPrice;
-		isFixed = fixedPrice;
+		fixed = fixedPrice;
 	}
 	
 	public String getName()
@@ -22,12 +22,19 @@ public class Retailer
 		return name;
 	}
 	
-	public Proposal getRandomProposal()
+	public Proposal getProposal()
 	{
-		Random random = new Random();
-		double newSellPrice = random.nextDouble()*(1.0f - 0.7f) * sellPricePerUnit;
-		double newBuyPrice = random.nextDouble()*(1.0f - 0.7f) * buyPricePerUnit;
-		
-		return new Proposal(name, newSellPrice, newBuyPrice);
+		double newSellPrice = sellPricePerUnit;
+		double newBuyPrice = buyPricePerUnit;
+		if(!fixed)
+		{
+			Random random = new Random();
+			newSellPrice = (random.nextDouble()*(1.0f - 0.7f)+0.7f) * sellPricePerUnit;
+			
+			newBuyPrice = (random.nextDouble()*(1.0f - 0.7f)+0.7f) * buyPricePerUnit;
+		}
+		return new Proposal(name, Ulti.round(newSellPrice), Ulti.round(newBuyPrice));
 	}
+	
+	
 }
