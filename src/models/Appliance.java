@@ -4,11 +4,12 @@ public class Appliance
 {
 	private String name;
 	private double consumeRate;
-	
-	public Appliance(String _name, double _consumeRate)
+	private boolean fixed;
+	public Appliance(String _name, double _consumeRate, boolean _fixed)
 	{
 		name = _name;
 		consumeRate = _consumeRate;
+		fixed = _fixed;
 	}
 	
 	public String getName()
@@ -18,11 +19,13 @@ public class Appliance
 	
 	public double getConsumeRate()
 	{
-		Random rand = new Random();
-		double newConsumeRate = (rand.nextDouble()*(1.0f-0.7f)+0.7f)*consumeRate;
-		newConsumeRate = Math.round(newConsumeRate*10);
-		newConsumeRate = newConsumeRate/10;
-		return newConsumeRate;
+		double newConsumeRate = consumeRate;
+		if(!fixed)
+		{
+			Random rand = new Random();
+			newConsumeRate = (rand.nextDouble()*(1.0f-0.7f)+0.7f)*consumeRate;
+		}
+		return Ulti.round(newConsumeRate);
 	}
 	
 }

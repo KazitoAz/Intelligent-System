@@ -6,30 +6,33 @@ public class Home
 {
 	private double totalConsume;
 	private double totalGenerate;
-	private double income;
-	private double expense;
+	
+	private Proposal currentProposal;
 	
 	public Home()
 	{
 		totalConsume = 0;
 		totalGenerate = 0;
-		income = 0;
-		expense =0;
 	}
 	
 	public double getTotalConsume()
-	{
-		
-		totalConsume = Math.round(totalConsume*10);
-		totalConsume = totalConsume/10;
-		return totalConsume;
+	{;
+		return Ulti.round(totalConsume);
 	}
 	
 	public double getTotalGenerate()
 	{
-		totalGenerate = Math.round(totalGenerate*10);
-		totalGenerate = totalGenerate/10;
-		return totalGenerate;
+		return Ulti.round(totalGenerate);
+	}
+	
+	public void SetProposal(Proposal proposal)
+	{
+		currentProposal = proposal;
+	}
+	
+	public Proposal getProposal()
+	{
+		return currentProposal;
 	}
 	
 	public void consume(double amount)
@@ -42,6 +45,8 @@ public class Home
 		totalGenerate+=amount;
 	}
 	
+	
+	
 	public void reset()
 	{
 		totalConsume = 0;
@@ -50,11 +55,19 @@ public class Home
 	
 	public double getIncome()
 	{
-		return income;
+		if(currentProposal == null)
+		{
+			return 0;
+		}
+		return Ulti.round(totalGenerate * currentProposal.getBuyPrice());
 	}
 	
 	public double getExpense()
 	{
-		return expense;
+		if(currentProposal == null)
+		{
+			return 0;
+		}
+		return Ulti.round(totalConsume * currentProposal.getSellPrice());
 	}
 }

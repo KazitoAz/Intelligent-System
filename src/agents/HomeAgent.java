@@ -11,15 +11,21 @@ import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import models.Appliance;
 import models.Home;
+import models.Proposal;
 
 public class HomeAgent extends Agent
 {
 	private Home home;
 	private String[] retailerAgents;
 	private String[] applianceAgents;
-	
+
+	private double predictConsume;
+	private double predictGenerate;
 	private int reportInterval = 2;
-	private int agentReportCount = 0;
+	private int applianceReportCount = 0;
+	private int retailerReportCount = 0;
+	
+	private Proposal[] proposals;
 	@Override
 	protected void setup()
 	{
@@ -34,12 +40,12 @@ public class HomeAgent extends Agent
 			{
 				System.out.println("Added " + retailerAgents[i]);
 			}
-			
+			proposals = new Proposal[retailerAgents.length];
 			for (int i = 0; i < applianceAgents.length; i++)
 			{
 				System.out.println("Added " + applianceAgents[i]);
 			}
-			
+			requestProposals();
 			System.out.println("Home agent is up.");
 			addBehaviour(homeAgentTickBehaviour());
 			addBehaviour(receiveBehaviour());
@@ -54,28 +60,42 @@ public class HomeAgent extends Agent
 			@Override
 			protected void onTick()
 			{
-				if((agentReportCount+applianceAgents.length) % applianceAgents.length == 0)
+				if((applianceReportCount+applianceAgents.length) % applianceAgents.length == 0)
 				{
-					System.out.println("-Hour " + Math.round(agentReportCount/applianceAgents.length + 1) + ":");
+					System.out.println("-Hour " + Math.round(applianceReportCount/applianceAgents.length + 1) + ":");
 				}
-				for (String applianceName : applianceAgents)
-				{
-					requestAppliancesUsage(applianceName);
-				}
+				requestAppliancesUsage();
 				
 			}
 		};
 	}
 	
-	private void requestAppliancesUsage(String applianceName)
+	private void requestAppliancesUsage()
 	{
-		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-		
-		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
-		msg.addReceiver(new AID(applianceName, AID.ISLOCALNAME));
-		msg.setContent("request usage");
-		
-		send(msg);
+		for (String applianceName : applianceAgents)
+		{
+			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+			
+			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+			msg.addReceiver(new AID(applianceName, AID.ISLOCALNAME));
+			msg.setContent("request usage");
+			
+			send(msg);
+		}
+	}
+	
+	private void requestProposals()
+	{
+		for (String retailerName : retailerAgents)
+		{
+			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+			
+			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+			msg.addReceiver(new AID(retailerName, AID.ISLOCALNAME));
+			msg.setContent("request proposal");
+			
+			send(msg);
+		}
 	}
 	
 	private Behaviour receiveBehaviour()
@@ -89,32 +109,72 @@ public class HomeAgent extends Agent
 				ACLMessage msg = receive();
 				if(msg!=null)
 				{
-					
-					
 					if(msg.getContent().contains("consume"))
 					{
 						String[] dataStrings = msg.getContent().split(",");
 						home.consume(Double.parseDouble(dataStrings[1]));
-						agentReportCount++;
+						applianceReportCount++;
 					}
 					else if(msg.getContent().contains("generate"))
 					{
 						String[] dataStrings = msg.getContent().split(",");
 						home.generate(Double.parseDouble(dataStrings[1]));
-						agentReportCount++;
+						applianceReportCount++;
+					}
+					else if(msg.getContent().contains("proposal"))
+					{
+						String[] dataStrings = msg.getContent().split(",");
+						for (int i = 0; i < retailerAgents.length; i++)
+						{
+							if(dataStrings[1].equals(retailerAgents[i]))
+							{
+								proposals[i] = new Proposal(dataStrings[1], Double.parseDouble(dataStrings[2]) , Double.parseDouble(dataStrings[3]));
+								retailerReportCount++;
+								break;
+							}
+						}
 					}
 					
-					if(agentReportCount ==reportInterval*applianceAgents.length)
+					if(retailerReportCount == retailerAgents.length)
 					{
-						System.out.println("Total consume: " + home.getTotalConsume());
-						System.out.println("Total generate: " + home.getTotalGenerate());
-						home.reset();
-						agentReportCount = 0;
-						System.out.println("------------------------------------");
+						ChooseProposal();
+					}
+					
+					if(applianceReportCount ==reportInterval*applianceAgents.length)
+					{
+						System.out.println("Total consume: " + home.getTotalConsume() + "kwh | Expense: $" + home.getExpense());
+						System.out.println("Total generate: " + home.getTotalGenerate() + "kwh | Income: $" + home.getIncome());
+						applianceReportCount = 0;
+						requestProposals();
 					}
 				}
 				
 			}
 		};
 	}
+	
+	private void ChooseProposal()
+	{
+		Proposal bestProposal = proposals[1];
+		double profit = home.getTotalConsume()*proposals[1].getSellPrice() + home.getTotalGenerate()*proposals[1].getBuyPrice();
+		for (Proposal proposal : proposals)
+		{
+			System.out.println(proposal.toPrintMessage());
+			if(proposal == bestProposal)
+				continue;
+			double proposalProfit = home.getTotalConsume()*proposal.getSellPrice() + home.getTotalGenerate()*proposal.getBuyPrice();
+			if(proposalProfit > profit)
+			{
+				profit = proposalProfit;
+				bestProposal = proposal;
+			}
+		}
+		home.SetProposal(bestProposal);
+		System.out.println("Choose proposal: " + bestProposal.getRetailerName());
+		retailerReportCount = 0;
+		home.reset();
+		System.out.println("------------------------------------");
+		
+	}
+	
 }

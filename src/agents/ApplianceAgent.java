@@ -35,7 +35,7 @@ public class ApplianceAgent extends Agent
 			@Override
 			protected void onTick()
 			{
-				informCusuming();
+				informConsuming();
 				
 			}
 		};
@@ -54,7 +54,7 @@ public class ApplianceAgent extends Agent
 				{
 					if(msg.getContent().contains("request"))
 					{
-						informCusuming();
+						informConsuming();
 						
 					}
 				}
@@ -63,7 +63,7 @@ public class ApplianceAgent extends Agent
 		};
 	}
 	
-	private void informCusuming()
+	private void informConsuming()
 	{
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		
@@ -76,7 +76,7 @@ public class ApplianceAgent extends Agent
 			type = "generate,";
 		}
 		msg.setContent(type + consumeRate );
-		System.out.println(appliance.getName() +": " +consumeRate);
+		System.out.println(appliance.getName() +": " +consumeRate +"kwh");
 		send(msg);
 	}
 }

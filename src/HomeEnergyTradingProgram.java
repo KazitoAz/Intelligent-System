@@ -38,19 +38,19 @@ public class HomeEnergyTradingProgram
 		
 		
 		Appliance appliances[] = {
-				new Appliance("SolarPanel", 5),
-				new Appliance("AirContinioner", -2f),
-				new Appliance("Refrigerator", -0.8f)
+				new Appliance("SolarPanel", 5, false),
+				new Appliance("AirContinioner", -2f,false),
+				new Appliance("Refrigerator", -0.8f,true)
 		};
 		
 		Retailer retailers[] = {
-				new Retailer("AGL", 0.2f,0.3f,true),
-				new Retailer("Origin",0.21f,0.31f,true),
+				new Retailer("AGL", 0.2f,0.3f,false),
+				new Retailer("Origin",0.21f,0.31f,false),
 				new Retailer("EnergyAustralia",0.22f,0.32f,true)
 		};
 		
 		Object[][] applianceArgs = new Object[3][2];
-		Object[][] retailerArgs = new Object[3][1];
+		Object[][] retailerArgs = new Object[3][2];
 		Home home = new Home();
 		Object[] homeArg = new Object[3];
 		homeArg[0] = home;
@@ -59,6 +59,7 @@ public class HomeEnergyTradingProgram
 			applianceArgs[i][0] = appliances[i];
 			applianceArgs[i][1] = "HomeAgent1";
 			retailerArgs[i][0] = retailers[i];
+			retailerArgs[i][1] = "HomeAgent1";
 		}
 		
 		//add retailers name into home arguments

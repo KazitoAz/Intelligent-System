@@ -29,8 +29,18 @@ public class Proposal
 	{
 		String msg = "";
 		
-		msg = retailerString+",sellPrice="+sellPricePerUnit+",buyPrice="+buyPricePerUnit;
+		msg = "proposal,"+retailerString+","+sellPricePerUnit+","+ buyPricePerUnit;
 		
 		return msg;
+	}
+	
+	public String getRetailerName()
+	{
+		return retailerString;
+	}
+	
+	public String toPrintMessage()
+	{
+		return "Retailer_" + retailerString + ": " + " sell: $" + sellPricePerUnit +"/kwh" + " buy: $" + buyPricePerUnit + "/kwh";
 	}
 }
