@@ -1,5 +1,6 @@
 package agents;
 
+import FIPA.stringsHelper;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -54,6 +55,7 @@ public class ApplianceAgent extends Agent
 					if(msg.getContent().contains("request"))
 					{
 						informCusuming();
+						
 					}
 				}
 				
@@ -67,8 +69,14 @@ public class ApplianceAgent extends Agent
 		
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgentName, AID.ISLOCALNAME));
-		msg.setContent("cosume " + appliance.getConsumeRate() );
-		
+		String type = "consume,";
+		double consumeRate = appliance.getConsumeRate();
+		if(consumeRate > 0)
+		{
+			type = "generate,";
+		}
+		msg.setContent(type + consumeRate );
+		System.out.println(appliance.getName() +": " +consumeRate);
 		send(msg);
 	}
 }
