@@ -38,9 +38,9 @@ public class HomeEnergyTradingProgram
 		
 		
 		Appliance appliances[] = {
-				new Appliance("SolarPanel", -10),
-				new Appliance("AirContinioner", 2.5f),
-				new Appliance("Refrigerator", 1.2f)
+				new Appliance("SolarPanel", 5),
+				new Appliance("AirContinioner", -2f),
+				new Appliance("Refrigerator", -0.8f)
 		};
 		
 		Retailer retailers[] = {
