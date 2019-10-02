@@ -52,7 +52,7 @@ public class HomeEnergyTradingProgram
 		Object[][] applianceArgs = new Object[3][2];
 		Object[][] retailerArgs = new Object[3][1];
 		Home home = new Home();
-		Object[] homeArg = new Object[4];
+		Object[] homeArg = new Object[3];
 		homeArg[0] = home;
 		for (int i = 0; i < 3; i++)
 		{
@@ -61,6 +61,23 @@ public class HomeEnergyTradingProgram
 			retailerArgs[i][0] = retailers[i];
 		}
 		
+		//add retailers name into home arguments
+		String[] retailersList = new String[retailers.length];
+		for(int i =0; i< retailers.length;i++)
+		{
+			retailersList[i] = retailers[i].getName();
+		}
+		homeArg[1] = retailersList;
+		
+		//add appliance name into home arguments
+		String[] appliancesList = new String[appliances.length];
+		for(int i =0; i < appliances.length; i++)
+		{
+			appliancesList[i] = appliances[i].getName();
+		}
+		homeArg[2] = appliancesList;
+		
+		//setup JADE agents and containers
 		AgentController rc;
 		AgentController ac;
 		AgentController hc;
@@ -70,7 +87,6 @@ public class HomeEnergyTradingProgram
 			{
 				ac = applianceContainer.createNewAgent(appliances[i].getName(), "agents.ApplianceAgent", applianceArgs[i]);
 				rc = retailerContainer.createNewAgent(retailers[i].getName(), "agents.RetailerAgent", retailerArgs[i]);
-				homeArg[i+1] = retailers[i].getName();
 				ac.start();
 				rc.start();
 			}
