@@ -3,6 +3,7 @@ package agents;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -20,7 +21,7 @@ public class ApplianceAgent extends Agent
 		{
 			appliance = (Appliance)args[0];
 			homeAgentName = (String)args[1];
-			addBehaviour(applianceTickBehaviour());
+			addBehaviour(receiveBehaviour());
 			System.out.println(appliance.getName() + " is up.");
 		}
 	}
@@ -34,6 +35,27 @@ public class ApplianceAgent extends Agent
 			protected void onTick()
 			{
 				informCusuming();
+				
+			}
+		};
+	}
+	
+	private Behaviour receiveBehaviour() 
+	{
+		return new CyclicBehaviour()
+		{
+			
+			@Override
+			public void action()
+			{
+				ACLMessage msg = receive();
+				if(msg!=null)
+				{
+					if(msg.getContent().contains("request"))
+					{
+						informCusuming();
+					}
+				}
 				
 			}
 		};
