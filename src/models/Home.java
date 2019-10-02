@@ -1,44 +1,51 @@
 package models;
 
+import java.util.Random;
+
 public class Home
 {
-	private double totalConsumed;
-	private double totalGenerated;
+	private double totalConsume;
+	private double totalGenerate;
 	private double income;
 	private double expense;
 	
 	public Home()
 	{
-		totalConsumed = 0;
-		totalGenerated = 0;
+		totalConsume = 0;
+		totalGenerate = 0;
 		income = 0;
 		expense =0;
 	}
 	
-	public double getTotalConsumede()
+	public double getTotalConsume()
 	{
-		return totalConsumed;
+		
+		totalConsume = Math.round(totalConsume*10);
+		totalConsume = totalConsume/10;
+		return totalConsume;
 	}
 	
-	public double getTotalGenerated()
+	public double getTotalGenerate()
 	{
-		return totalGenerated;
+		totalGenerate = Math.round(totalGenerate*10);
+		totalGenerate = totalGenerate/10;
+		return totalGenerate;
 	}
 	
 	public void consume(double amount)
 	{
-		totalConsumed+=amount;
+		totalConsume+=amount;
 	}
 	
 	public void generate(double amount)
 	{
-		totalGenerated+=amount;
+		totalGenerate+=amount;
 	}
 	
 	public void reset()
 	{
-		totalConsumed = 0;
-		totalGenerated = 0;
+		totalConsume = 0;
+		totalGenerate = 0;
 	}
 	
 	public double getIncome()

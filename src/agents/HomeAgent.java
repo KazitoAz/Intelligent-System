@@ -1,10 +1,13 @@
 package agents;
 
+import java.util.Iterator;
 import java.util.Vector;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import models.Appliance;
 import models.Home;
@@ -12,7 +15,10 @@ import models.Home;
 public class HomeAgent extends Agent
 {
 	private Home home;
-	private Vector<String> retailerAgents;
+	private String[] retailerAgents;
+	private String[] applianceAgents;
+	
+	private int agentReportCount = 0;
 	@Override
 	protected void setup()
 	{
@@ -20,11 +26,52 @@ public class HomeAgent extends Agent
 		if(args!=null)
 		{
 			home = (Home)args[0];
+			retailerAgents = (String[]) args[1];
+			applianceAgents = (String[]) args[2];
+			
+			for (int i = 0; i < retailerAgents.length; i++)
+			{
+				System.out.println("Added " + retailerAgents[i]);
+			}
+			
+			for (int i = 0; i < applianceAgents.length; i++)
+			{
+				System.out.println("Added " + applianceAgents[i]);
+			}
+			
 			System.out.println("Home agent is up.");
+			addBehaviour(homeAgentTickBehaviour());
 			addBehaviour(receiveBehaviour());
 		}
 	}
 	
+	private Behaviour homeAgentTickBehaviour()
+	{
+		return new TickerBehaviour(this, 1000)
+		{
+			
+			@Override
+			protected void onTick()
+			{
+				for (String applianceName : applianceAgents)
+				{
+					requestAppliancesUsage(applianceName);
+				}
+				
+			}
+		};
+	}
+	
+	private void requestAppliancesUsage(String applianceName)
+	{
+		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+		
+		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+		msg.addReceiver(new AID(applianceName, AID.ISLOCALNAME));
+		msg.setContent("request usage");
+		
+		send(msg);
+	}
 	
 	private Behaviour receiveBehaviour()
 	{
@@ -37,7 +84,26 @@ public class HomeAgent extends Agent
 				ACLMessage msg = receive();
 				if(msg!=null)
 				{
-					System.out.println("Home agent: Message recived from "+ msg.getSender().getName() + " :" + msg.getContent());
+					if(msg.getContent().contains("consume"))
+					{
+						String[] dataStrings = msg.getContent().split(",");
+						home.consume(Double.parseDouble(dataStrings[1]));
+						agentReportCount++;
+					}
+					else if(msg.getContent().contains("generate"))
+					{
+						String[] dataStrings = msg.getContent().split(",");
+						home.generate(Double.parseDouble(dataStrings[1]));
+						agentReportCount++;
+					}
+					
+					if(agentReportCount ==2*applianceAgents.length)
+					{
+						System.out.println("Total consume: " + home.getTotalConsume());
+						System.out.println("Total generate: " + home.getTotalGenerate());
+						home.reset();
+						agentReportCount = 0;
+					}
 				}
 				
 			}
