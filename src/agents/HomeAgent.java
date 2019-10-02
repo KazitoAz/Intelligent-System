@@ -18,6 +18,7 @@ public class HomeAgent extends Agent
 	private String[] retailerAgents;
 	private String[] applianceAgents;
 	
+	private int reportInterval = 2;
 	private int agentReportCount = 0;
 	@Override
 	protected void setup()
@@ -53,6 +54,10 @@ public class HomeAgent extends Agent
 			@Override
 			protected void onTick()
 			{
+				if((agentReportCount+applianceAgents.length) % applianceAgents.length == 0)
+				{
+					System.out.println("-Hour " + Math.round(agentReportCount/applianceAgents.length + 1) + ":");
+				}
 				for (String applianceName : applianceAgents)
 				{
 					requestAppliancesUsage(applianceName);
@@ -84,6 +89,8 @@ public class HomeAgent extends Agent
 				ACLMessage msg = receive();
 				if(msg!=null)
 				{
+					
+					
 					if(msg.getContent().contains("consume"))
 					{
 						String[] dataStrings = msg.getContent().split(",");
@@ -97,12 +104,13 @@ public class HomeAgent extends Agent
 						agentReportCount++;
 					}
 					
-					if(agentReportCount ==2*applianceAgents.length)
+					if(agentReportCount ==reportInterval*applianceAgents.length)
 					{
 						System.out.println("Total consume: " + home.getTotalConsume());
 						System.out.println("Total generate: " + home.getTotalGenerate());
 						home.reset();
 						agentReportCount = 0;
+						System.out.println("------------------------------------");
 					}
 				}
 				
