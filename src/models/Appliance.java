@@ -3,9 +3,9 @@ import java.util.Random;
 public class Appliance
 {
 	private String name;
-	private float consumeRate;
+	private double consumeRate;
 	
-	public Appliance(String _name, float _consumeRate)
+	public Appliance(String _name, double _consumeRate)
 	{
 		name = _name;
 		consumeRate = _consumeRate;
@@ -16,11 +16,13 @@ public class Appliance
 		return name;
 	}
 	
-	public float getConsumeRate()
+	public double getConsumeRate()
 	{
 		Random rand = new Random();
-		consumeRate = 10 - rand.nextInt(20);
-		return consumeRate;
+		double newConsumeRate = (rand.nextDouble()*(1.0f-0.7f)+0.7f)*consumeRate;
+		newConsumeRate = Math.round(newConsumeRate*10);
+		newConsumeRate = newConsumeRate/10;
+		return newConsumeRate;
 	}
 	
 }
