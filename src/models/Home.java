@@ -2,35 +2,51 @@ package models;
 
 public class Home
 {
-	private float totalConsumeRate;
-	private float totalGenerateRate;
-	private float income;
-	private float expense;
+	private double totalConsumed;
+	private double totalGenerated;
+	private double income;
+	private double expense;
 	
 	public Home()
 	{
-		totalConsumeRate = 0;
-		totalGenerateRate = 0;
+		totalConsumed = 0;
+		totalGenerated = 0;
 		income = 0;
 		expense =0;
 	}
 	
-	public float getTotalConsumeRate()
+	public double getTotalConsumede()
 	{
-		return totalConsumeRate;
+		return totalConsumed;
 	}
 	
-	public float getTotalGenerateRate()
+	public double getTotalGenerated()
 	{
-		return totalGenerateRate;
+		return totalGenerated;
 	}
 	
-	public float getIncome()
+	public void consume(double amount)
+	{
+		totalConsumed+=amount;
+	}
+	
+	public void generate(double amount)
+	{
+		totalGenerated+=amount;
+	}
+	
+	public void reset()
+	{
+		totalConsumed = 0;
+		totalGenerated = 0;
+	}
+	
+	public double getIncome()
 	{
 		return income;
 	}
 	
-	public float getExpense()
+	public double getExpense()
 	{
 		return expense;
 	}
