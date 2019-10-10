@@ -10,6 +10,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import models.Appliance;
+import models.ApplianceRecord;
 import models.Home;
 import models.Proposal;
 
@@ -18,7 +19,7 @@ public class HomeAgent extends Agent
 	private Home home;
 	private String[] retailerAgents;
 	private String[] applianceAgents;
-
+	private ApplianceRecord[] applianceRecords;
 	private double predictConsume;
 	private double predictGenerate;
 	private int reportInterval = 2;
@@ -34,7 +35,9 @@ public class HomeAgent extends Agent
 		{
 			home = (Home)args[0];
 			retailerAgents = (String[]) args[1];
+			
 			applianceAgents = (String[]) args[2];
+			applianceRecords = new ApplianceRecord[applianceAgents.length];
 			
 			for (int i = 0; i < retailerAgents.length; i++)
 			{
@@ -43,6 +46,7 @@ public class HomeAgent extends Agent
 			proposals = new Proposal[retailerAgents.length];
 			for (int i = 0; i < applianceAgents.length; i++)
 			{
+				applianceRecords[i] = new ApplianceRecord(applianceAgents[i]);
 				System.out.println("Added " + applianceAgents[i]);
 			}
 			requestProposals();
@@ -112,13 +116,29 @@ public class HomeAgent extends Agent
 					if(msg.getContent().contains("consume"))
 					{
 						String[] dataStrings = msg.getContent().split(",");
-						home.consume(Double.parseDouble(dataStrings[1]));
+						double consumeAmount = Double.parseDouble(dataStrings[1]);
+						home.consume(consumeAmount);
+						for (ApplianceRecord aRecord : applianceRecords) 
+						{
+							if(aRecord.getName().equals(msg.getSender().getLocalName()))
+							{
+								aRecord.AddToRecord(consumeAmount);
+							}
+						}
 						applianceReportCount++;
 					}
 					else if(msg.getContent().contains("generate"))
 					{
 						String[] dataStrings = msg.getContent().split(",");
-						home.generate(Double.parseDouble(dataStrings[1]));
+						double generateAmount = Double.parseDouble(dataStrings[1]);
+						home.generate(generateAmount);
+						for (ApplianceRecord aRecord : applianceRecords) 
+						{
+							if(aRecord.getName().equals(msg.getSender().getLocalName()))
+							{
+								aRecord.AddToRecord(generateAmount);
+							}
+						}
 						applianceReportCount++;
 					}
 					else if(msg.getContent().contains("proposal"))
@@ -151,6 +171,18 @@ public class HomeAgent extends Agent
 				
 			}
 		};
+	}
+	
+	private double PredictUsage()
+	{
+		double totalUsage = 0;
+		
+		for (ApplianceRecord aRecord : applianceRecords) 
+		{
+			totalUsage+=aRecord.GetAverageUsage();
+		}
+		
+		return totalUsage;
 	}
 	
 	private void ChooseProposal()
