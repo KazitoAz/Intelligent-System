@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JDesktopPane;
 import javax.swing.JSplitPane;
@@ -24,6 +25,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JSeparator;
 import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Home1 extends JFrame {
 
@@ -131,6 +134,11 @@ public class Home1 extends JFrame {
 		contentPane.add(panel_2);
 		
 		JButton btnOrder = new JButton("Order");
+		btnOrder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "Make Order Successfully!");
+			}
+		});
 		btnOrder.setFont(new Font("Arial", Font.PLAIN, 16));
 		btnOrder.setBounds(858, 663, 156, 49);
 		contentPane.add(btnOrder);
