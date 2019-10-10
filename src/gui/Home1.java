@@ -1,3 +1,4 @@
+package gui;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -24,7 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JSeparator;
 import java.awt.Color;
 
-public class Home extends JFrame {
+public class Home1 extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtHomeEnergyTrading;
@@ -50,7 +51,7 @@ public class Home extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Home frame = new Home();
+					Home1 frame = new Home1();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -62,7 +63,7 @@ public class Home extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Home() {
+	public Home1() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1219, 780);
 		contentPane = new JPanel();
