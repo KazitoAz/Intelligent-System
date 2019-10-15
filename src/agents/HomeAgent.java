@@ -101,7 +101,19 @@ public class HomeAgent extends Agent
 			send(msg);
 		}
 	}
-	
+	/*
+	private void Sendquote()
+	{
+		for (String retailerName : retailerAgents)
+		{
+			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+			
+			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+			msg.addReceiver(new AID(retailerName, AID.ISLOCALNAME));
+			msg.setContent(home.getTotalConsume()*proposals[1].getSellPrice());
+			send(msg);
+	}
+	*/
 	private Behaviour receiveBehaviour()
 	{
 		return new CyclicBehaviour()
@@ -185,10 +197,12 @@ public class HomeAgent extends Agent
 		return totalUsage;
 	}
 	
+	
 	private void ChooseProposal()
 	{
 		Proposal bestProposal = proposals[1];
 		double profit = home.getTotalConsume()*proposals[1].getSellPrice() + home.getTotalGenerate()*proposals[1].getBuyPrice();
+		
 		for (Proposal proposal : proposals)
 		{
 			System.out.println(proposal.toPrintMessage());
