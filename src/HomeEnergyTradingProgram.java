@@ -1,3 +1,4 @@
+import gui.Home1;
 import jade.core.Agent;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -39,7 +40,7 @@ public class HomeEnergyTradingProgram
 		
 		Appliance appliances[] = {
 				new Appliance("SolarPanel", 5, false),
-				new Appliance("AirContinioner", -2f,false),
+				new Appliance("AirConditioner", -2f,false),
 				new Appliance("Refrigerator", -0.8f,true)
 		};
 		
@@ -52,7 +53,7 @@ public class HomeEnergyTradingProgram
 		Object[][] applianceArgs = new Object[3][2];
 		Object[][] retailerArgs = new Object[3][2];
 		Home home = new Home();
-		Object[] homeArg = new Object[3];
+		Object[] homeArg = new Object[4];
 		homeArg[0] = home;
 		for (int i = 0; i < 3; i++)
 		{
@@ -82,6 +83,11 @@ public class HomeEnergyTradingProgram
 		AgentController rc;
 		AgentController ac;
 		AgentController hc;
+		
+		//initialize GUI and pass to home agent
+		Home1 gui = new Home1();
+		homeArg[3] = gui;
+		gui.setVisible(true);
 		try
 		{
 			for(int i =0; i <3; i++)
