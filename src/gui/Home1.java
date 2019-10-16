@@ -279,5 +279,55 @@ public class Home1 extends JFrame {
 		contentPane.add(current_hour);
 	}
 
+	public void UpdateApplianceValues(String _name, Double value) {
+		switch (_name) {
+		case "SolarPanel":
+			solarPanelValue.setText(value.toString() + "kwh");
+			break;
+		case "AirConditioner":
+			airConValue.setText(value.toString() + "kwh");
+			break;
+		case "Refrigerator":
+			refrigeratorValue.setText(value.toString() + "kwh");
+			break;
+		default:
+			break;
+		}
+	}
+
+	public void UpdateRetailerValues(String _name, Double _buy, Double _sell) {
+		switch (_name) {
+		case "AGL":
+			AGL_buyPrice.setText("$" + _buy.toString() + "/kwh");
+			AGL_sellPrice.setText("$" + _sell.toString() + "/kwh");
+			break;
+		case "Origin":
+			origin_buyPrice.setText("$" + _buy.toString() + "/kwh");
+			origin_sellPrice.setText("$" + _sell.toString() + "/kwh");
+			break;
+		case "EnergyAustralia":
+			enAus_buyPrice.setText("$" + _buy.toString() + "/kwh");
+			enAus_sellPrice.setText("$" + _sell.toString() + "/kwh");
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void UpdateHomeAgent(Double _totalConsume,Double _totalGenerate,Double _expense,Double _income)
+	{
+		total_consume.setText(_totalConsume.toString() + "kwh");
+		total_generate.setText(_totalGenerate.toString() + "kwh");
+		expense.setText("$" + _expense.toString());
+		income.setText("$" +_income.toString());
+	}
+	
+	public void UpdateContract(String _contract)
+	{
+		contract_company.setText(_contract);
+	}
+
+	public void SetHour(Integer _hourValue) {
+		current_hour.setText(_hourValue.toString());
 	}
 }
