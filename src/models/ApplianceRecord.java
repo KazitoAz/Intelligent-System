@@ -11,6 +11,7 @@ public class ApplianceRecord
 	public ApplianceRecord(String _name)
 	{
 		applianceName = _name;
+		usageRecords = new Vector<Double>();
 	}
 	
 	public String getName()
