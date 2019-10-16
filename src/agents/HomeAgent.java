@@ -3,6 +3,7 @@ package agents;
 import java.util.Iterator;
 import java.util.Vector;
 
+import gui.Home1;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -25,7 +26,7 @@ public class HomeAgent extends Agent
 	private int reportInterval = 2;
 	private int applianceReportCount = 0;
 	private int retailerReportCount = 0;
-	
+	private Home1 gui;
 	private Proposal[] proposals;
 	@Override
 	protected void setup()
@@ -49,6 +50,7 @@ public class HomeAgent extends Agent
 				applianceRecords[i] = new ApplianceRecord(applianceAgents[i]);
 				System.out.println("Added " + applianceAgents[i]);
 			}
+			gui = (Home1)args[3];
 			requestProposals();
 			System.out.println("Home agent is up.");
 			addBehaviour(homeAgentTickBehaviour());
@@ -66,7 +68,9 @@ public class HomeAgent extends Agent
 			{
 				if((applianceReportCount+applianceAgents.length) % applianceAgents.length == 0)
 				{
-					System.out.println("-Hour " + Math.round(applianceReportCount/applianceAgents.length + 1) + ":");
+					int _hour = Math.round(applianceReportCount/applianceAgents.length + 1);
+					System.out.println("-Hour " +  _hour+ ":");
+					gui.SetHour(_hour);
 				}
 				requestAppliancesUsage();
 				
@@ -135,6 +139,7 @@ public class HomeAgent extends Agent
 							if(aRecord.getName().equals(msg.getSender().getLocalName()))
 							{
 								aRecord.AddToRecord(consumeAmount);
+								gui.UpdateApplianceValues(msg.getSender().getLocalName(), consumeAmount);
 							}
 						}
 						applianceReportCount++;
@@ -149,6 +154,7 @@ public class HomeAgent extends Agent
 							if(aRecord.getName().equals(msg.getSender().getLocalName()))
 							{
 								aRecord.AddToRecord(generateAmount);
+								gui.UpdateApplianceValues(msg.getSender().getLocalName(), generateAmount);
 							}
 						}
 						applianceReportCount++;
@@ -160,7 +166,11 @@ public class HomeAgent extends Agent
 						{
 							if(dataStrings[1].equals(retailerAgents[i]))
 							{
-								proposals[i] = new Proposal(dataStrings[1], Double.parseDouble(dataStrings[2]) , Double.parseDouble(dataStrings[3]));
+								String _retailerName = dataStrings[1];
+								double _buy = Double.parseDouble(dataStrings[2]);
+								double _sell = Double.parseDouble(dataStrings[3]);
+								proposals[i] = new Proposal(_retailerName,  _buy, _sell);
+								gui.UpdateRetailerValues(_retailerName, _buy, _sell);
 								retailerReportCount++;
 								break;
 							}
@@ -174,11 +184,19 @@ public class HomeAgent extends Agent
 					
 					if(applianceReportCount ==reportInterval*applianceAgents.length)
 					{
-						System.out.println("Total consume: " + home.getTotalConsume() + "kwh | Expense: $" + home.getExpense());
-						System.out.println("Total generate: " + home.getTotalGenerate() + "kwh | Income: $" + home.getIncome());
+						double _totalConsume = home.getTotalConsume();
+						double _totalGenerate = home.getTotalGenerate();
+						double _expense = home.getExpense();
+						double _income = home.getIncome();
+						
+						System.out.println("Total consume: " + _totalConsume + "kwh | Expense: $" + _expense);
+						System.out.println("Total generate: " + _totalGenerate + "kwh | Income: $" + _income);
+						gui.UpdateHomeAgent(_totalConsume, _totalGenerate, _expense, _income);
 						applianceReportCount = 0;
 						requestProposals();
 					}
+					
+					
 				}
 				
 			}
@@ -216,6 +234,7 @@ public class HomeAgent extends Agent
 			}
 		}
 		home.SetProposal(bestProposal);
+		gui.UpdateContract(bestProposal.getRetailerName());
 		System.out.println("Choose proposal: " + bestProposal.getRetailerName());
 		retailerReportCount = 0;
 		home.reset();
