@@ -50,7 +50,6 @@ public class RetailerAgent extends Agent
 		ACLMessage acl1=receive();
         if(acl1!=null) {
         	System.out.println("receiving");
-        	
         }
 	}
 	protected void informProposal()

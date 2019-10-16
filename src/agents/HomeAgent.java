@@ -108,14 +108,15 @@ public class HomeAgent extends Agent
 	/*
 	private void Sendquote()
 	{
+		double 1income = home.getIncome();
 		for (String retailerName : retailerAgents)
 		{
-			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			
-			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
-			msg.addReceiver(new AID(retailerName, AID.ISLOCALNAME));
-			msg.setContent(home.getTotalConsume()*proposals[1].getSellPrice());
-			send(msg);
+			ACLMessage a = new ACLMessage(ACLMessage.REQUEST);
+            AID r= new AID(retailerName, AID.ISLOCALNAME);
+            a.addReceiver(r);   
+            a.setSender(new AID(getLocalName(), AID.ISLOCALNAME));  
+            a.setContent("Send new request" + 1income + 1); 
+            send(a); 
 	}
 	*/
 	private Behaviour receiveBehaviour()
