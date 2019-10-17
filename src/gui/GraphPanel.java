@@ -1,7 +1,7 @@
 package gui;
 /* Code from https://gist.github.com/roooodcastro/6325153 */
+/* Make changes to suit our project */
 /* http://stackoverflow.com/questions/8693342/drawing-a-simple-line-graph-in-java */
-/* http://blog.stackoverflow.com/2009/06/attribution-required/ */
 /* https://creativecommons.org/licenses/by-sa/3.0/ */
 
 import java.awt.BasicStroke;
@@ -39,15 +39,20 @@ public class GraphPanel extends JPanel {
         this.scores = scores;
     }
     
-    private String getDayStringFromHour(int hour)
+    private String getHour(int hour)
     {
-    	if (hour < 24) return "MON";
-    	if (hour < 24*2) return "TUE";
-    	if (hour < 24*3) return "WED";
-    	if (hour < 24*4) return "THU";
-    	if (hour < 24*5) return "FRI";
-    	if (hour < 24*6) return "SAT";
-    	return "SUN";
+    	if (hour < 2) return "2";
+    	if (hour < 4) return "4";
+    	if (hour < 6) return "6";
+    	if (hour < 8) return "8";
+    	if (hour < 10) return "10";
+    	if (hour < 12) return "12";
+    	if (hour < 14) return "14";
+    	if (hour < 16) return "16";
+    	if (hour < 18) return "18";
+    	if (hour < 20) return "20";
+    	if (hour < 22) return "22";
+    	return "24";
     }
 
     @Override
@@ -100,7 +105,7 @@ public class GraphPanel extends JPanel {
                     g2.setColor(gridColor);
                     g2.drawLine(x0, getHeight() - padding - labelPadding - 1 - pointWidth, x1, padding);
                     g2.setColor(Color.BLACK);
-                    String xLabel = getDayStringFromHour(i);//i + "";
+                    String xLabel = getHour(i);//i + "";
                     FontMetrics metrics = g2.getFontMetrics();
                     int labelWidth = metrics.stringWidth(xLabel);
                     g2.drawString(xLabel, x0 - labelWidth / 2, y0 + metrics.getHeight() + 3);
@@ -142,27 +147,10 @@ public class GraphPanel extends JPanel {
         	g2.drawLine(x1, y1, x1, y2);
         }
         
-        Color colorLookup[] = new Color[8];
-        colorLookup[0] = Color.red;
-        colorLookup[1] = Color.orange;
-        colorLookup[2] = Color.yellow;
-        colorLookup[3] = Color.green;
-        colorLookup[4] = Color.cyan;
-        colorLookup[5] = Color.blue;
-        colorLookup[6] = Color.magenta;
-        colorLookup[7] = Color.lightGray;
+        
         Stroke oldStroke = g2.getStroke();
         g2.setColor(lineColor);
         g2.setStroke(GRAPH_STROKE);
-        for (int i = 0; i < graphPoints.size() - 1; i++) {
-        	g2.setColor(colorLookup[i/24]);
-            int x1 = graphPoints.get(i).x;
-            int y1 = graphPoints.get(i).y;
-            int x2 = graphPoints.get(i + 1).x;
-            int y2 = graphPoints.get(i + 1).y;
-            g2.drawLine(x1, y1, x2, y2);
-        }
-        
         
 
         g2.setStroke(oldStroke);
@@ -205,8 +193,7 @@ public class GraphPanel extends JPanel {
     
     public void setStartEndTimes(double start, double end)
     {
-    	/* Oh my god this is a hack but I can't brain properly right now */
-    	if (endTime >= 24*7)
+    	if (endTime >= 24)
     	{
     		startTime = start;
     		endTime = end;
