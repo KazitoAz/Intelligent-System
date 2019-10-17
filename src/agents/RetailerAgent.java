@@ -21,6 +21,7 @@ public class RetailerAgent extends Agent
 			homeAgent = (String)args[1];
 			System.out.println(retailer.getName() + " is up.");
 			addBehaviour(receiveBehaviour());
+			receivequote();
 		}
 	}
 	
@@ -38,21 +39,41 @@ public class RetailerAgent extends Agent
 					if(msg.getContent().contains("request") )
 					{
 						informProposal();
+						
+					}
+					if(msg.getContent().contains("Send") )
+					{
+			        	String title = msg.getContent();
+			            //ACLMessage reply = acl1.createReply();
+			            String str = title.substring(17);
+			            //int price = Integer.parseInt(str);
+			        	if(str!=null)
+			        	{
+			        		System.out.println("receiving");
+			        		System.out.println(str);
+			        		
+			        	}
 					}
 				}
 				
 			}
+			
 		};
 	}
 	
 	private void receivequote()
 	{
 		ACLMessage acl1=receive();
+		
         if(acl1!=null) {
-        	System.out.println("receiving");
-        	if(acl1.getContent().number)
+        	//System.out.println("receiving");
+        	String title = acl1.getContent();
+            //ACLMessage reply = acl1.createReply();
+            String str = title.substring(17);
+            int price = Integer.parseInt(str);
+        	if(price > 0)
         	{
-        		
+        		System.out.println("receiving");
         	}
         }
 	}

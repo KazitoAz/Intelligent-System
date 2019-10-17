@@ -105,20 +105,22 @@ public class HomeAgent extends Agent
 			send(msg);
 		}
 	}
-	/*
+	
 	private void Sendquote()
 	{
-		double 1income = home.getIncome();
+		double sincome = home.getIncome();
 		for (String retailerName : retailerAgents)
 		{
 			ACLMessage a = new ACLMessage(ACLMessage.REQUEST);
             AID r= new AID(retailerName, AID.ISLOCALNAME);
             a.addReceiver(r);   
             a.setSender(new AID(getLocalName(), AID.ISLOCALNAME));  
-            a.setContent("Send new request" + 1income + 1); 
-            send(a); 
+            a.setContent("Send new request:" + (sincome + 1)); 
+            send(a);
+        }
+		
 	}
-	*/
+	
 	private Behaviour receiveBehaviour()
 	{
 		return new CyclicBehaviour()
@@ -195,6 +197,7 @@ public class HomeAgent extends Agent
 						gui.UpdateHomeAgent(_totalConsume, _totalGenerate, _expense, _income);
 						applianceReportCount = 0;
 						requestProposals();
+						Sendquote();
 					}
 					
 					
