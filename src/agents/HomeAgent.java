@@ -3,6 +3,7 @@ package agents;
 import java.util.Iterator;
 import java.util.Vector;
 
+import FIPA.stringsHelper;
 import gui.Home1;
 import jade.core.AID;
 import jade.core.Agent;
@@ -23,7 +24,6 @@ public class HomeAgent extends Agent
 	private Home home;
 	private String[] retailerAgents;
 	private String[] applianceAgents;
-	private ApplianceRecord[] applianceRecords;
 	private double predictConsume;
 	private double predictGenerate;
 	private int reportInterval = 2;
@@ -31,6 +31,9 @@ public class HomeAgent extends Agent
 	private int retailerReportCount = 0;
 	private Home1 gui;
 	private Proposal[] proposals;
+	private double totalPredictUsage= 0;
+	private double totalPredictGenerate = 0;
+	private int predictReportCount =0;
 	@Override
 	protected void setup()
 	{
@@ -41,7 +44,6 @@ public class HomeAgent extends Agent
 			retailerAgents = (String[]) args[1];
 			
 			applianceAgents = (String[]) args[2];
-			applianceRecords = new ApplianceRecord[applianceAgents.length];
 			
 			for (int i = 0; i < retailerAgents.length; i++)
 			{
@@ -50,7 +52,6 @@ public class HomeAgent extends Agent
 			proposals = new Proposal[retailerAgents.length];
 			for (int i = 0; i < applianceAgents.length; i++)
 			{
-				applianceRecords[i] = new ApplianceRecord(applianceAgents[i]);
 				System.out.println("Added " + applianceAgents[i]);
 			}
 			gui = (Home1)args[3];
@@ -65,7 +66,6 @@ public class HomeAgent extends Agent
 	{
 		return new TickerBehaviour(this, 1000)
 		{
-			
 			@Override
 			protected void onTick()
 			{
@@ -76,7 +76,6 @@ public class HomeAgent extends Agent
 					gui.SetHour(_hour);
 				}
 				requestAppliancesUsage();
-				
 			}
 		};
 	}
@@ -90,6 +89,21 @@ public class HomeAgent extends Agent
 			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 			msg.addReceiver(new AID(applianceName, AID.ISLOCALNAME));
 			msg.setContent("request usage");
+			msg.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
+			
+			send(msg);
+		}
+	}
+	
+	private void requestApplicancePredictUsage()
+	{
+		for (String applianceName : applianceAgents)
+		{
+			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+			
+			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+			msg.addReceiver(new AID(applianceName, AID.ISLOCALNAME));
+			msg.setContent("predict usage");
 			msg.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
 			
 			send(msg);
@@ -124,14 +138,13 @@ public class HomeAgent extends Agent
             a.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
             send(a);
         }
-		
 	}
+	
 	
 	private Behaviour receiveBehaviour()
 	{
 		return new CyclicBehaviour()
 		{
-			
 			@Override
 			public void action()
 			{
@@ -139,93 +152,96 @@ public class HomeAgent extends Agent
 				ACLMessage msg = receive(template);
 				if(msg!=null)
 				{
-					if(msg.getContent().contains("consume"))
+					if(msg.getContent().contains("advice"))
 					{
-						String[] dataStrings = msg.getContent().split(",");
-						double consumeAmount = Double.parseDouble(dataStrings[1]);
-						home.consume(consumeAmount);
-						for (ApplianceRecord aRecord : applianceRecords) 
-						{
-							if(aRecord.getName().equals(msg.getSender().getLocalName()))
-							{
-								aRecord.AddToRecord(consumeAmount);
-								gui.UpdateApplianceValues(msg.getSender().getLocalName(), consumeAmount);
-							}
-						}
-						applianceReportCount++;
-					}
-					else if(msg.getContent().contains("generate"))
-					{
-						String[] dataStrings = msg.getContent().split(",");
-						double generateAmount = Double.parseDouble(dataStrings[1]);
-						home.generate(generateAmount);
-						for (ApplianceRecord aRecord : applianceRecords) 
-						{
-							if(aRecord.getName().equals(msg.getSender().getLocalName()))
-							{
-								aRecord.AddToRecord(generateAmount);
-								gui.UpdateApplianceValues(msg.getSender().getLocalName(), generateAmount);
-							}
-						}
-						applianceReportCount++;
+						ReadApplianceAdviceMessage(msg.getContent(), msg.getSender().getLocalName());
 					}
 					else if(msg.getContent().contains("proposal"))
 					{
-						String[] dataStrings = msg.getContent().split(",");
-						for (int i = 0; i < retailerAgents.length; i++)
-						{
-							if(dataStrings[1].equals(retailerAgents[i]))
-							{
-								String _retailerName = dataStrings[1];
-								double _buy = Double.parseDouble(dataStrings[2]);
-								double _sell = Double.parseDouble(dataStrings[3]);
-								proposals[i] = new Proposal(_retailerName,  _buy, _sell);
-								gui.UpdateRetailerValues(_retailerName, _buy, _sell);
-								retailerReportCount++;
-								break;
-							}
-						}
+						ReadProposal(msg.getContent());
 					}
-					
-					if(retailerReportCount == retailerAgents.length)
+					else if(msg.getContent().contains("predict"))
 					{
-						ChooseProposal();
+						ReadAppliancePredictMessage(msg.getContent());
 					}
 					
 					if(applianceReportCount ==reportInterval*applianceAgents.length)
 					{
-						double _totalConsume = home.getTotalConsume();
-						double _totalGenerate = home.getTotalGenerate();
-						double _expense = home.getExpense();
-						double _income = home.getIncome();
-						
-						System.out.println("Total consume: " + _totalConsume + "kwh | Expense: $" + _expense);
-						System.out.println("Total generate: " + _totalGenerate + "kwh | Income: $" + _income);
-						gui.UpdateHomeAgent(_totalConsume, _totalGenerate, _expense, _income);
-						applianceReportCount = 0;
-						requestProposals();
-						Sendquote();
+						PeriodSummary();
 					}
-					
-					
 				}
 				
 			}
 		};
 	}
 	
-	private double PredictUsage()
+	private void ReadApplianceAdviceMessage(String msg, String _name)
 	{
-		double totalUsage = 0;
+		String[] dataStrings = msg.split(",");
+		double consumeAmount = Double.parseDouble(dataStrings[1]);
+		if(consumeAmount<0)
+			home.consume(consumeAmount);
+		else
+			home.generate(consumeAmount);
 		
-		for (ApplianceRecord aRecord : applianceRecords) 
-		{
-			totalUsage+=aRecord.GetAverageUsage();
-		}
-		
-		return totalUsage;
+		gui.UpdateApplianceValues(_name, consumeAmount);
+		applianceReportCount++;
 	}
 	
+	private void ReadProposal(String msg)
+	{
+		String[] dataStrings = msg.split(",");
+		for (int i = 0; i < retailerAgents.length; i++)
+		{
+			if(dataStrings[1].equals(retailerAgents[i]))
+			{
+				String _retailerName = dataStrings[1];
+				double _buy = Double.parseDouble(dataStrings[2]);
+				double _sell = Double.parseDouble(dataStrings[3]);
+				proposals[i] = new Proposal(_retailerName,  _buy, _sell);
+				gui.UpdateRetailerValues(_retailerName, _buy, _sell);
+				retailerReportCount++;
+				break;
+			}
+		}
+		
+		if(retailerReportCount == retailerAgents.length)
+		{
+			ChooseProposal();
+		}
+	}
+	
+	private void ReadAppliancePredictMessage(String msg)
+	{
+		String[] dataStrings = msg.split(",");
+		double consumeAmount = Double.parseDouble(dataStrings[1]);
+		if(consumeAmount>0)
+			totalPredictUsage += consumeAmount;
+		else {
+			totalPredictGenerate += consumeAmount;
+		}
+		predictReportCount++;
+		if(predictReportCount== retailerAgents.length)
+		{
+			requestProposals();
+			Sendquote();
+			predictReportCount = 0;
+		}
+	}
+	
+	private void PeriodSummary()
+	{
+		double _totalConsume = home.getTotalConsume();
+		double _totalGenerate = home.getTotalGenerate();
+		double _expense = home.getExpense();
+		double _income = home.getIncome();
+		
+		System.out.println("Total consume: " + _totalConsume + "kwh | Expense: $" + _expense);
+		System.out.println("Total generate: " + _totalGenerate + "kwh | Income: $" + _income);
+		gui.UpdateHomeAgent(_totalConsume, _totalGenerate, _expense, _income);
+		applianceReportCount = 0;
+		requestApplicancePredictUsage();
+	}
 	
 	private void ChooseProposal()
 	{

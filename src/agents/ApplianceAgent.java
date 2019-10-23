@@ -12,11 +12,13 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.FIPAProtocolNames;
 import models.Appliance;
+import models.ApplianceRecord;
 
 public class ApplianceAgent extends Agent
 {
 	private Appliance appliance;
 	private String homeAgentName;
+	private ApplianceRecord records = new ApplianceRecord();
 	@Override
 	protected void setup()
 	{
@@ -48,7 +50,6 @@ public class ApplianceAgent extends Agent
 	{
 		return new CyclicBehaviour()
 		{
-			
 			@Override
 			public void action()
 			{
@@ -59,7 +60,10 @@ public class ApplianceAgent extends Agent
 					if(msg.getContent().contains("request"))
 					{
 						informConsuming();
-						
+					}
+					if(msg.getContent().contains("predict"))
+					{
+						informPredictConsuming();
 					}
 				}
 				
@@ -74,14 +78,23 @@ public class ApplianceAgent extends Agent
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgentName, AID.ISLOCALNAME));
 		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
-		String type = "consume,";
+		
 		double consumeRate = appliance.getConsumeRate();
-		if(consumeRate > 0)
-		{
-			type = "generate,";
-		}
-		msg.setContent(type + consumeRate );
+		records.AddToRecord(consumeRate);
+		msg.setContent("advice," + consumeRate );
 		System.out.println(appliance.getName() +": " +consumeRate +"kwh");
+		send(msg);
+	}
+	
+	private void informPredictConsuming()
+	{
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		
+		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+		msg.addReceiver(new AID(homeAgentName, AID.ISLOCALNAME));
+		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
+		
+		msg.setContent("predict," + records.GetAverageUsage() );
 		send(msg);
 	}
 }

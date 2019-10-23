@@ -4,19 +4,11 @@ import java.util.Vector;
 
 public class ApplianceRecord 
 {
-	private String applianceName;
-	
 	private Vector<Double> usageRecords;
 	
-	public ApplianceRecord(String _name)
+	public ApplianceRecord()
 	{
-		applianceName = _name;
 		usageRecords = new Vector<Double>();
-	}
-	
-	public String getName()
-	{
-		return applianceName;
 	}
 	
 	public void AddToRecord(double num)
