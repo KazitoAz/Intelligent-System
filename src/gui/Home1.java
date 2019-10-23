@@ -29,11 +29,19 @@ import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.SystemColor;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
 
 public class Home1 extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField txtHomeEnergyTrading;
 	private JLabel lblSolarPanel;
 	private JLabel lblRefrigerator;
 	private JLabel airConValue;
@@ -64,6 +72,22 @@ public class Home1 extends JFrame {
 	private JLabel contract_company;
 	private JLabel lblHour;
 	private JLabel current_hour;
+	private JLabel lblSellPriceAccept;
+	private JLabel lblBuyPriceAccept;
+	private JTextField sellPriceAcceptRangeMin;
+	private JTextField buyPriceAcceptRangeMin;
+	private JTextField sellPriceAcceptRangeMax;
+	private JTextField buyPriceAcceptRangeMax;
+	private JLabel label;
+	private JLabel label_1;
+	private JLabel lblPredictedGenerate;
+	private JLabel lblPredictedConsume;
+	private JLabel label_4;
+	private JLabel label_5;
+	private JLabel lblPaidExtra;
+	private JLabel predictedExpense;
+	private JLabel lblPredictedIncome;
+	private JLabel predictedIncome;
 
 	/**
 	 * Launch the application.
@@ -96,20 +120,12 @@ public class Home1 extends JFrame {
 			}
 		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 706, 766);
+		setBounds(100, 100, 706, 790);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		txtHomeEnergyTrading = new JTextField();
-		txtHomeEnergyTrading.setBounds(5, 5, 675, 25);
-		txtHomeEnergyTrading.setHorizontalAlignment(SwingConstants.CENTER);
-		txtHomeEnergyTrading.setFont(new Font("Arial", Font.PLAIN, 16));
-		txtHomeEnergyTrading.setText("\r\nSmart Home Dashboard");
-		contentPane.add(txtHomeEnergyTrading);
-		txtHomeEnergyTrading.setColumns(10);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(5, 41, 675, 241);
@@ -224,58 +240,60 @@ public class Home1 extends JFrame {
 		lblHomeAgent.setBounds(10, 506, 116, 25);
 		contentPane.add(lblHomeAgent);
 
-		lblTotalConsume = new JLabel("Total Consume");
+		lblTotalConsume = new JLabel("Actual Consume");
 		lblTotalConsume.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTotalConsume.setBounds(25, 542, 116, 25);
+		lblTotalConsume.setBounds(25, 566, 116, 25);
 		contentPane.add(lblTotalConsume);
 
-		lblTotalGenerate = new JLabel("Total Generate");
+		lblTotalGenerate = new JLabel("Actual Generate");
 		lblTotalGenerate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTotalGenerate.setBounds(25, 578, 116, 25);
+		lblTotalGenerate.setBounds(25, 602, 116, 25);
 		contentPane.add(lblTotalGenerate);
 
-		total_consume = new JLabel("");
+		total_consume = new JLabel("11");
+		total_consume.setBackground(SystemColor.activeCaption);
 		total_consume.setForeground(Color.RED);
 		total_consume.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		total_consume.setBounds(151, 542, 116, 25);
+		total_consume.setBounds(151, 566, 116, 25);
 		contentPane.add(total_consume);
 
-		total_generate = new JLabel("");
+		total_generate = new JLabel("11");
+		total_generate.setBackground(SystemColor.activeCaption);
 		total_generate.setForeground(Color.GREEN);
 		total_generate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		total_generate.setBounds(151, 578, 116, 25);
+		total_generate.setBounds(151, 602, 116, 25);
 		contentPane.add(total_generate);
 
 		lblExpense = new JLabel("Expense");
 		lblExpense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblExpense.setBounds(330, 542, 116, 25);
+		lblExpense.setBounds(25, 638, 116, 25);
 		contentPane.add(lblExpense);
 
 		lblIncome = new JLabel("Income");
 		lblIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblIncome.setBounds(330, 578, 116, 25);
+		lblIncome.setBounds(25, 674, 116, 25);
 		contentPane.add(lblIncome);
 
 		expense = new JLabel("");
 		expense.setForeground(Color.RED);
 		expense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		expense.setBounds(456, 542, 116, 25);
+		expense.setBounds(151, 638, 116, 25);
 		contentPane.add(expense);
 
 		income = new JLabel("");
 		income.setForeground(Color.GREEN);
 		income.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		income.setBounds(456, 578, 116, 25);
+		income.setBounds(151, 674, 116, 25);
 		contentPane.add(income);
 
 		lblContractWith = new JLabel("Contract With");
 		lblContractWith.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblContractWith.setBounds(25, 614, 116, 25);
+		lblContractWith.setBounds(25, 710, 116, 25);
 		contentPane.add(lblContractWith);
 
 		contract_company = new JLabel("");
 		contract_company.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		contract_company.setBounds(151, 614, 116, 25);
+		contract_company.setBounds(151, 710, 116, 25);
 		contentPane.add(contract_company);
 
 		lblHour = new JLabel("Hour");
@@ -287,8 +305,145 @@ public class Home1 extends JFrame {
 		current_hour.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		current_hour.setBounds(50, 306, 116, 25);
 		contentPane.add(current_hour);
+		
+		JLabel lblSmartHomeDashboard = new JLabel("Smart Home Dashboard");
+		lblSmartHomeDashboard.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblSmartHomeDashboard.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSmartHomeDashboard.setBounds(5, 0, 675, 43);
+		contentPane.add(lblSmartHomeDashboard);
+		
+		lblSellPriceAccept = new JLabel("Sell Price Accept Range");
+		lblSellPriceAccept.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblSellPriceAccept.setBounds(25, 530, 151, 25);
+		contentPane.add(lblSellPriceAccept);
+		
+		lblBuyPriceAccept = new JLabel("Buy Price Accept Range");
+		lblBuyPriceAccept.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblBuyPriceAccept.setBounds(329, 530, 151, 25);
+		contentPane.add(lblBuyPriceAccept);
+		
+		sellPriceAcceptRangeMin = new JTextField();
+		sellPriceAcceptRangeMin.setBackground(SystemColor.control);
+		sellPriceAcceptRangeMin.setBounds(168, 534, 57, 20);
+		contentPane.add(sellPriceAcceptRangeMin);
+		sellPriceAcceptRangeMin.setColumns(10);
+		
+		buyPriceAcceptRangeMin = new JTextField();
+		buyPriceAcceptRangeMin.setColumns(10);
+		buyPriceAcceptRangeMin.setBackground(SystemColor.menu);
+		buyPriceAcceptRangeMin.setBounds(476, 534, 57, 20);
+		contentPane.add(buyPriceAcceptRangeMin);
+		
+		sellPriceAcceptRangeMax = new JTextField();
+		sellPriceAcceptRangeMax.setColumns(10);
+		sellPriceAcceptRangeMax.setBackground(SystemColor.menu);
+		sellPriceAcceptRangeMax.setBounds(235, 534, 57, 20);
+		contentPane.add(sellPriceAcceptRangeMax);
+		
+		buyPriceAcceptRangeMax = new JTextField();
+		buyPriceAcceptRangeMax.setColumns(10);
+		buyPriceAcceptRangeMax.setBackground(SystemColor.menu);
+		buyPriceAcceptRangeMax.setBounds(548, 534, 57, 20);
+		contentPane.add(buyPriceAcceptRangeMax);
+		
+		label = new JLabel("-");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		label.setBounds(225, 530, 10, 25);
+		contentPane.add(label);
+		
+		label_1 = new JLabel("-");
+		label_1.setHorizontalAlignment(SwingConstants.CENTER);
+		label_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		label_1.setBounds(534, 530, 10, 25);
+		contentPane.add(label_1);
+		
+		lblPredictedGenerate = new JLabel("Predicted  Generate");
+		lblPredictedGenerate.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblPredictedGenerate.setBounds(330, 602, 126, 25);
+		contentPane.add(lblPredictedGenerate);
+		
+		lblPredictedConsume = new JLabel("Predicted Consume");
+		lblPredictedConsume.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblPredictedConsume.setBounds(330, 566, 130, 25);
+		contentPane.add(lblPredictedConsume);
+		
+		label_4 = new JLabel("11");
+		label_4.setForeground(Color.RED);
+		label_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		label_4.setBackground(SystemColor.activeCaption);
+		label_4.setBounds(476, 566, 116, 25);
+		contentPane.add(label_4);
+		
+		label_5 = new JLabel("11");
+		label_5.setForeground(Color.GREEN);
+		label_5.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		label_5.setBackground(SystemColor.activeCaption);
+		label_5.setBounds(476, 602, 116, 25);
+		contentPane.add(label_5);
+		
+		lblPaidExtra = new JLabel("Predicted Expense");
+		lblPaidExtra.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblPaidExtra.setBounds(330, 638, 116, 25);
+		contentPane.add(lblPaidExtra);
+		
+		predictedExpense = new JLabel("");
+		predictedExpense.setForeground(Color.RED);
+		predictedExpense.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		predictedExpense.setBounds(456, 638, 116, 25);
+		contentPane.add(predictedExpense);
+		
+		lblPredictedIncome = new JLabel("Predicted Income");
+		lblPredictedIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblPredictedIncome.setBounds(330, 674, 116, 25);
+		contentPane.add(lblPredictedIncome);
+		
+		predictedIncome = new JLabel("");
+		predictedIncome.setForeground(Color.RED);
+		predictedIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		predictedIncome.setBounds(456, 681, 116, 25);
+		contentPane.add(predictedIncome);
 	}
+	
+	void SaveConfig()
+	{
+		try (OutputStream output = new FileOutputStream("resources/config.properties")) {
 
+            Properties prop = new Properties();
+            prop.setProperty("buyAcceptRangeMin", buyPriceAcceptRangeMin.getText());
+            prop.setProperty("buyAcceptRangeMax", buyPriceAcceptRangeMax.getText());
+            prop.setProperty("sellAcceptRangeMin", sellPriceAcceptRangeMin.getText());
+            prop.setProperty("sellAcceptRangeMax", sellPriceAcceptRangeMax.getText());
+            prop.store(output, null);
+
+            System.out.println(prop);
+
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+
+	}
+	
+	void ReadConfig()
+	{
+		System.out.println("Reading");
+		try (InputStream input = new FileInputStream("resources/config.properties")) {
+
+            Properties prop = new Properties();
+            prop.load(input);
+            buyPriceAcceptRangeMin.setText(prop.getProperty("buyAcceptRangeMin"));
+            buyPriceAcceptRangeMax.setText(prop.getProperty("buyAcceptRangeMax"));
+            sellPriceAcceptRangeMin.setText(prop.getProperty("sellAcceptRangeMin"));
+            sellPriceAcceptRangeMax.setText(prop.getProperty("sellAcceptRangeMax"));
+
+        } catch (IOException ex) {
+        	 buyPriceAcceptRangeMin.setText("0");
+             buyPriceAcceptRangeMax.setText("0.32");
+             sellPriceAcceptRangeMin.setText("0.25");
+             sellPriceAcceptRangeMax.setText("0.4");
+            ex.printStackTrace();
+        }
+	}
 	public void UpdateApplianceValues(String _name, Double value) {
 		switch (_name) {
 		case "SolarPanel":
