@@ -9,7 +9,10 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.FIPAProtocolNames;
 import models.Appliance;
 import models.ApplianceRecord;
 import models.Home;
@@ -87,6 +90,7 @@ public class HomeAgent extends Agent
 			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 			msg.addReceiver(new AID(applianceName, AID.ISLOCALNAME));
 			msg.setContent("request usage");
+			msg.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
 			
 			send(msg);
 		}
@@ -101,6 +105,7 @@ public class HomeAgent extends Agent
 			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 			msg.addReceiver(new AID(retailerName, AID.ISLOCALNAME));
 			msg.setContent("request proposal");
+			msg.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
 			
 			send(msg);
 		}
@@ -116,6 +121,7 @@ public class HomeAgent extends Agent
             a.addReceiver(r);   
             a.setSender(new AID(getLocalName(), AID.ISLOCALNAME));  
             a.setContent("Send new request:" + (sincome + 1)); 
+            a.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
             send(a);
         }
 		
@@ -129,7 +135,8 @@ public class HomeAgent extends Agent
 			@Override
 			public void action()
 			{
-				ACLMessage msg = receive();
+				MessageTemplate template = MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
+				ACLMessage msg = receive(template);
 				if(msg!=null)
 				{
 					if(msg.getContent().contains("consume"))

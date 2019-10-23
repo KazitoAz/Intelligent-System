@@ -4,7 +4,10 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.FIPAProtocolNames;
 import models.Retailer;
 
 public class RetailerAgent extends Agent
@@ -33,7 +36,8 @@ public class RetailerAgent extends Agent
 			@Override
 			public void action()
 			{
-				ACLMessage msg = receive();
+				MessageTemplate template = MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+				ACLMessage msg = receive(template);
 				if(msg!=null)
 				{
 					if(msg.getContent().contains("request") )
@@ -84,7 +88,7 @@ public class RetailerAgent extends Agent
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
 		msg.setContent(retailer.getProposal().toString());
-		
+		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
 		send(msg);
 	}
 }

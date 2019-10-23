@@ -7,7 +7,10 @@ import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.FIPAProtocolNames;
 import models.Appliance;
 
 public class ApplianceAgent extends Agent
@@ -49,7 +52,8 @@ public class ApplianceAgent extends Agent
 			@Override
 			public void action()
 			{
-				ACLMessage msg = receive();
+				MessageTemplate template = MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+				ACLMessage msg = receive(template);
 				if(msg!=null)
 				{
 					if(msg.getContent().contains("request"))
@@ -69,6 +73,7 @@ public class ApplianceAgent extends Agent
 		
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgentName, AID.ISLOCALNAME));
+		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
 		String type = "consume,";
 		double consumeRate = appliance.getConsumeRate();
 		if(consumeRate > 0)
