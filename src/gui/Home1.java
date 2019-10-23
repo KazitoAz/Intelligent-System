@@ -85,6 +85,16 @@ public class Home1 extends JFrame {
 	 * Create the frame.
 	 */
 	public Home1() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+				ReadConfig();
+			}
+			@Override
+			public void windowClosing(WindowEvent e) {
+				SaveConfig();
+			}
+		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 706, 766);
 		contentPane = new JPanel();
