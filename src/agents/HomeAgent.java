@@ -169,10 +169,12 @@ public class HomeAgent extends Agent
 				
 				MessageTemplate template2 = MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_PROPOSE);
 				ACLMessage retailerMsg = receive(template2);
-				
-				if(retailerMsg.getContent().contains("proposal"))
+				if(retailerMsg!=null)
 				{
-					ReadProposal(retailerMsg.getContent());
+					if(retailerMsg.getContent().contains("proposal"))
+					{
+						ReadProposal(retailerMsg.getContent());
+					}
 				}
 			}
 		};

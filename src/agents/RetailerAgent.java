@@ -89,7 +89,7 @@ public class RetailerAgent extends Agent
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
 		msg.setContent("accept proposal");
-		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
+		msg.setProtocol(FIPAProtocolNames.FIPA_PROPOSE);
 		send(msg);
 	}
 	
@@ -100,7 +100,7 @@ public class RetailerAgent extends Agent
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
 		msg.setContent("reject proposal");
-		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
+		msg.setProtocol(FIPAProtocolNames.FIPA_PROPOSE);
 		send(msg);
 	}
 	
