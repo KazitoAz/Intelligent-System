@@ -256,12 +256,57 @@ public class HomeAgent extends Agent
 	
 	private void ChooseProposal()
 	{
-		Proposal bestProposal = proposals[1];
-		double profit = home.getTotalConsume()*proposals[1].getSellPrice() + home.getTotalGenerate()*proposals[1].getBuyPrice();
 		
-		for (Proposal proposal : proposals)
+		Proposal[] finalProposals = new Proposal[retailerAgents.length];
+		int retailerNegotiatingIndex = 0;
+		ResetRetailerAccpetStatus();
+		for(int i =0; i < retailerAgents.length; i++)
 		{
-			System.out.println(proposal.toPrintMessage());
+			double _sellPrice = proposals[i].getSellPrice();
+			double _buyPrice = proposals[i].getBuyPrice();
+			System.out.println("Neogatiating with "+ retailerAgents[i]);
+			System.out.println("Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
+			_sellPrice = _sellPrice*0.5f;
+			while(!retailersAcceptProposal[i])
+			{
+				if(responsed)
+				{
+					_sellPrice = Ulti.round(_sellPrice * 1.1f);//increase buy price by 10% if proposal rejected
+					Negotiate(retailerAgents[i], _buyPrice, _sellPrice);
+					System.out.print(" Negotiating with Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
+					this.doWait(1000);
+					responsed = false;
+				}
+				receiveBehaviour().action();
+			}
+			if(_sellPrice > proposals[i].getSellPrice())
+				_sellPrice =  proposals[i].getSellPrice();
+			retailersAcceptProposal[i] = false;
+			_buyPrice = _buyPrice*1.5f;
+			
+			while(!retailersAcceptProposal[i])
+			{
+				if(responsed)
+				{
+					_buyPrice = Ulti.round(_buyPrice*0.9f); //decrease sell price by 10% if proposal rejected
+					Negotiate(retailerAgents[i], _buyPrice, _sellPrice);
+					System.out.print(" Negotiating with Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
+					
+					responsed = false;
+				}
+				receiveBehaviour().action();
+			}
+			if(_buyPrice < proposals[i].getBuyPrice())
+				_buyPrice =  proposals[i].getBuyPrice();
+			finalProposals[i] = new Proposal(retailerAgents[i], _sellPrice, _buyPrice);
+			System.out.println("Final proposal Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
+			System.out.println("------------------------------------");
+		}
+		
+		Proposal bestProposal = finalProposals[1];
+		double profit = home.getTotalConsume()*finalProposals[1].getSellPrice() + home.getTotalGenerate()*finalProposals[1].getBuyPrice();
+		for (Proposal proposal : finalProposals)
+		{
 			if(proposal == bestProposal)
 				continue;
 			double proposalProfit = home.getTotalConsume()*proposal.getSellPrice() + home.getTotalGenerate()*proposal.getBuyPrice();
@@ -278,10 +323,9 @@ public class HomeAgent extends Agent
 		gui.SetPredictedIncome(predictedIncome, predictedExpense);
 		
 		System.out.println("Choose proposal: " + bestProposal.getRetailerName());
-		retailerReportCount = 0;
+		ResetRetailerAccpetStatus();
 		home.reset();
-		System.out.println("------------------------------------");
-		
+		System.out.println("--------------------------------------------------------------------------------");
+		System.out.println("--------------------------------------------------------------------------------");
 	}
-	
 }
