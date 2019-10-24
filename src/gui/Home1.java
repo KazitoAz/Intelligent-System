@@ -40,6 +40,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 
 public class Home1 extends JFrame {
 
@@ -109,6 +115,19 @@ public class Home1 extends JFrame {
 			}
 		});
 	}
+	
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+		g.setColor(Color.BLACK);
+		g.drawString("Price", 25, 84);
+		g.drawString("Hour", 643, 320);
+		
+		g.drawLine(25, 90, 25, 320);
+		g.drawLine(25, 320, 640, 320);
+		
+		//repaint();
+	}
 
 	/**
 	 * Create the frame.
@@ -133,8 +152,9 @@ public class Home1 extends JFrame {
 		contentPane.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(5, 41, 675, 241);
+		panel.setBounds(5, 41, 675, 255);
 		contentPane.add(panel);
+		contentPane.setVisible(true);
 
 		JLabel lblApplianceAgents = new JLabel("Appliance Agents");
 		lblApplianceAgents.setFont(new Font("Tahoma", Font.PLAIN, 14));
