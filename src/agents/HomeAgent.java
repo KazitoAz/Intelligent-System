@@ -148,21 +148,17 @@ public class HomeAgent extends Agent
 			@Override
 			public void action()
 			{
-				MessageTemplate template = MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
-				ACLMessage msg = receive(template);
-				if(msg!=null)
+				MessageTemplate template1 = MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_QUERY);
+				ACLMessage appilanceMsg = receive(template1);
+				if(appilanceMsg!=null)
 				{
-					if(msg.getContent().contains("advice"))
+					if(appilanceMsg.getContent().contains("advice"))
 					{
-						ReadApplianceAdviceMessage(msg.getContent(), msg.getSender().getLocalName());
+						ReadApplianceAdviceMessage(appilanceMsg.getContent(), appilanceMsg.getSender().getLocalName());
 					}
-					else if(msg.getContent().contains("proposal"))
+					else if(appilanceMsg.getContent().contains("predict"))
 					{
-						ReadProposal(msg.getContent());
-					}
-					else if(msg.getContent().contains("predict"))
-					{
-						ReadAppliancePredictMessage(msg.getContent());
+						ReadAppliancePredictMessage(appilanceMsg.getContent());
 					}
 					
 					if(applianceReportCount ==reportInterval*applianceAgents.length)
@@ -171,6 +167,13 @@ public class HomeAgent extends Agent
 					}
 				}
 				
+				MessageTemplate template2 = MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_PROPOSE);
+				ACLMessage retailerMsg = receive(template2);
+				
+				if(retailerMsg.getContent().contains("proposal"))
+				{
+					ReadProposal(retailerMsg.getContent());
+				}
 			}
 		};
 	}
