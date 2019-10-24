@@ -513,4 +513,14 @@ public class Home1 extends JFrame {
 		predictedExpense.setText("$" + expense.toString());
 		predictedIncome.setText("$" + income.toString());
 	}
+	
+	public double getMaxSellPrice()
+	{
+		return Double.parseDouble(sellPriceAcceptRangeMax.getText());
+	}
+	
+	public double getMinBuyPrice()
+	{
+		return Double.parseDouble(buyPriceAcceptRangeMin.getText());
+	}
 }
