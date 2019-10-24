@@ -91,6 +91,8 @@ public class Home1 extends JFrame {
 	private JLabel lblPredictedIncome;
 	private JLabel predictedIncome;
 	private JTextField exceededPrice;
+	private JLabel expenseExceed;
+	private JLabel predictedExpenseExceed;
 
 	/**
 	 * Launch the application.
@@ -280,7 +282,7 @@ public class Home1 extends JFrame {
 		expense = new JLabel("");
 		expense.setForeground(Color.RED);
 		expense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		expense.setBounds(151, 638, 80, 25);
+		expense.setBounds(151, 638, 50, 25);
 		contentPane.add(expense);
 
 		income = new JLabel("");
@@ -393,7 +395,7 @@ public class Home1 extends JFrame {
 		predictedExpense = new JLabel("");
 		predictedExpense.setForeground(Color.RED);
 		predictedExpense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedExpense.setBounds(476, 638, 68, 25);
+		predictedExpense.setBounds(476, 638, 50, 25);
 		contentPane.add(predictedExpense);
 		
 		lblPredictedIncome = new JLabel("Predicted Income");
@@ -404,7 +406,7 @@ public class Home1 extends JFrame {
 		predictedIncome = new JLabel("");
 		predictedIncome.setForeground(new Color(60, 179, 113));
 		predictedIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedIncome.setBounds(476, 681, 68, 25);
+		predictedIncome.setBounds(476, 674, 68, 25);
 		contentPane.add(predictedIncome);
 		
 		JLabel lblExceededEnergyPrice = new JLabel("Exceeded energy price");
@@ -417,6 +419,18 @@ public class Home1 extends JFrame {
 		exceededPrice.setBackground(SystemColor.menu);
 		exceededPrice.setBounds(476, 310, 57, 20);
 		contentPane.add(exceededPrice);
+		
+		expenseExceed = new JLabel("");
+		expenseExceed.setForeground(Color.RED);
+		expenseExceed.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		expenseExceed.setBounds(198, 638, 57, 25);
+		contentPane.add(expenseExceed);
+		
+		predictedExpenseExceed = new JLabel("");
+		predictedExpenseExceed.setForeground(Color.RED);
+		predictedExpenseExceed.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		predictedExpenseExceed.setBounds(525, 638, 57, 25);
+		contentPane.add(predictedExpenseExceed);
 	}
 	
 	void SaveConfig()
@@ -519,6 +533,26 @@ public class Home1 extends JFrame {
 		generate = Ulti.round(generate);
 		predictedConsume.setText(consume.toString()+ "kwh");
 		predictedGenerate.setText(generate.toString()+ "kwh");
+	}
+	
+	public void SetExceededExpense(Double amount, Double contractSellPrice)
+	{
+		
+		if(amount < 0)
+		{
+			amount = amount * Double.parseDouble(exceededPrice.getText());
+			amount = Ulti.round(amount);
+			expenseExceed.setText("+$" + amount.toString());
+			predictedExpenseExceed.setText("");
+		}
+		else 
+		{
+			amount = Math.abs(amount);
+			amount*= contractSellPrice;
+			amount = Ulti.round(amount);
+			predictedExpenseExceed.setText("+$" + amount.toString());
+			expenseExceed.setText("");
+		}
 	}
 	
 	public void SetPredictedIncome(Double income, Double expense)

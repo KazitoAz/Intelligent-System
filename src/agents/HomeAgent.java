@@ -264,8 +264,6 @@ public class HomeAgent extends Agent
 			totalPredictGenerate = totalPredictGenerate*reportInterval;
 			gui.SetPredictedUsage(totalPredictUsage, totalPredictGenerate);
 			requestProposals();
-			
-			//Sendquote();
 			predictReportCount = 0;
 		}
 	}
@@ -280,6 +278,12 @@ public class HomeAgent extends Agent
 		System.out.println("Total consume: " + _totalConsume + "kwh | Expense: $" + _expense);
 		System.out.println("Total generate: " + _totalGenerate + "kwh | Income: $" + _income);
 		gui.UpdateHomeAgent(_totalConsume, _totalGenerate, _expense, _income);
+		
+		double usageDiff = Math.abs(totalPredictUsage) - Math.abs(_totalConsume);
+		usageDiff = Ulti.round(usageDiff);
+		
+		gui.SetExceededExpense(usageDiff,home.getProposal().getSellPrice());
+		
 		applianceReportCount = 0;
 		totalPredictGenerate = 0;
 		totalPredictUsage = 0;
@@ -308,9 +312,7 @@ public class HomeAgent extends Agent
 	
 	private void ChooseProposal()
 	{
-		
 		Proposal[] finalProposals = new Proposal[retailerAgents.length];
-		int retailerNegotiatingIndex = 0;
 		ResetRetailerQuoteAccpetStatus();
 		for(int i =0; i < retailerAgents.length; i++)
 		{
