@@ -32,7 +32,6 @@ public class RetailerAgent extends Agent
 	{
 		return new CyclicBehaviour()
 		{
-			
 			@Override
 			public void action()
 			{
@@ -43,8 +42,13 @@ public class RetailerAgent extends Agent
 					if(msg.getContent().contains("request") )
 					{
 						informProposal();
-						
 					}
+					else if(msg.getContent().contains("negotiate"))
+					{
+						readProposal(msg.getContent());
+					}
+					
+					
 					if(msg.getContent().contains("Send") )
 					{
 			        	String title = msg.getContent();
@@ -55,14 +59,49 @@ public class RetailerAgent extends Agent
 			        	{
 			        		System.out.println("receiving");
 			        		System.out.println(str);
-			        		
 			        	}
 					}
 				}
-				
 			}
-			
 		};
+	}
+	
+	private void readProposal(String msg)
+	{
+		String[] dataString = msg.split(",");
+		double _buyPrice = Double.parseDouble(dataString[1]);
+		double _sellPrice = Double.parseDouble(dataString[2]);
+		
+		if(retailer.proppoaslAccepetable(_sellPrice, _buyPrice))
+		{
+			acceptProposal();
+		}
+		else 
+		{
+			rejectProposal();
+		}
+	}
+	
+	void acceptProposal()
+	{
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		
+		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
+		msg.setContent("accept proposal");
+		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
+		send(msg);
+	}
+	
+	void rejectProposal()
+	{
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		
+		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
+		msg.setContent("reject proposal");
+		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
+		send(msg);
 	}
 	
 	private void receivequote()
@@ -77,7 +116,7 @@ public class RetailerAgent extends Agent
             int price = Integer.parseInt(str);
         	if(price > 0)
         	{
-        		System.out.println("receiving");
+        		//System.out.println("receiving");
         	}
         }
 	}
@@ -88,7 +127,7 @@ public class RetailerAgent extends Agent
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
 		msg.setContent(retailer.getProposal().toString());
-		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
+		msg.setProtocol(FIPAProtocolNames.FIPA_PROPOSE);
 		send(msg);
 	}
 }
