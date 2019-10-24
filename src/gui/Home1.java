@@ -90,6 +90,7 @@ public class Home1 extends JFrame {
 	private JLabel predictedExpense;
 	private JLabel lblPredictedIncome;
 	private JLabel predictedIncome;
+	private JTextField exceededPrice;
 
 	/**
 	 * Launch the application.
@@ -252,14 +253,14 @@ public class Home1 extends JFrame {
 		lblTotalGenerate.setBounds(25, 602, 116, 25);
 		contentPane.add(lblTotalGenerate);
 
-		total_consume = new JLabel("11");
+		total_consume = new JLabel("");
 		total_consume.setBackground(SystemColor.activeCaption);
 		total_consume.setForeground(Color.RED);
 		total_consume.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		total_consume.setBounds(151, 566, 116, 25);
 		contentPane.add(total_consume);
 
-		total_generate = new JLabel("11");
+		total_generate = new JLabel("");
 		total_generate.setBackground(SystemColor.activeCaption);
 		total_generate.setForeground(new Color(60, 179, 113));
 		total_generate.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -279,13 +280,13 @@ public class Home1 extends JFrame {
 		expense = new JLabel("");
 		expense.setForeground(Color.RED);
 		expense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		expense.setBounds(151, 638, 116, 25);
+		expense.setBounds(151, 638, 80, 25);
 		contentPane.add(expense);
 
 		income = new JLabel("");
 		income.setForeground(new Color(60, 179, 113));
 		income.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		income.setBounds(151, 674, 116, 25);
+		income.setBounds(151, 674, 80, 25);
 		contentPane.add(income);
 
 		lblContractWith = new JLabel("Contract With");
@@ -370,14 +371,14 @@ public class Home1 extends JFrame {
 		lblPredictedConsume.setBounds(330, 566, 130, 25);
 		contentPane.add(lblPredictedConsume);
 		
-		predictedConsume = new JLabel("11");
+		predictedConsume = new JLabel("");
 		predictedConsume.setForeground(Color.RED);
 		predictedConsume.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		predictedConsume.setBackground(SystemColor.activeCaption);
 		predictedConsume.setBounds(476, 566, 116, 25);
 		contentPane.add(predictedConsume);
 		
-		predictedGenerate = new JLabel("11");
+		predictedGenerate = new JLabel("");
 		predictedGenerate.setForeground(new Color(60, 179, 113));
 		predictedGenerate.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		predictedGenerate.setBackground(SystemColor.activeCaption);
@@ -392,7 +393,7 @@ public class Home1 extends JFrame {
 		predictedExpense = new JLabel("");
 		predictedExpense.setForeground(Color.RED);
 		predictedExpense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedExpense.setBounds(476, 638, 116, 25);
+		predictedExpense.setBounds(476, 638, 68, 25);
 		contentPane.add(predictedExpense);
 		
 		lblPredictedIncome = new JLabel("Predicted Income");
@@ -403,8 +404,19 @@ public class Home1 extends JFrame {
 		predictedIncome = new JLabel("");
 		predictedIncome.setForeground(new Color(60, 179, 113));
 		predictedIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedIncome.setBounds(476, 681, 116, 25);
+		predictedIncome.setBounds(476, 681, 68, 25);
 		contentPane.add(predictedIncome);
+		
+		JLabel lblExceededEnergyPrice = new JLabel("Exceeded energy price");
+		lblExceededEnergyPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblExceededEnergyPrice.setBounds(330, 306, 143, 25);
+		contentPane.add(lblExceededEnergyPrice);
+		
+		exceededPrice = new JTextField();
+		exceededPrice.setColumns(10);
+		exceededPrice.setBackground(SystemColor.menu);
+		exceededPrice.setBounds(476, 310, 57, 20);
+		contentPane.add(exceededPrice);
 	}
 	
 	void SaveConfig()
@@ -416,6 +428,7 @@ public class Home1 extends JFrame {
             prop.setProperty("buyAcceptRangeMax", buyPriceAcceptRangeMax.getText());
             prop.setProperty("sellAcceptRangeMin", sellPriceAcceptRangeMin.getText());
             prop.setProperty("sellAcceptRangeMax", sellPriceAcceptRangeMax.getText());
+            prop.setProperty("exceededPrice", exceededPrice.getText());
             prop.store(output, null);
 
             System.out.println(prop);
@@ -437,12 +450,14 @@ public class Home1 extends JFrame {
             buyPriceAcceptRangeMax.setText(prop.getProperty("buyAcceptRangeMax"));
             sellPriceAcceptRangeMin.setText(prop.getProperty("sellAcceptRangeMin"));
             sellPriceAcceptRangeMax.setText(prop.getProperty("sellAcceptRangeMax"));
+            exceededPrice.setText(prop.getProperty("exceededPrice"));
 
         } catch (IOException ex) {
         	 buyPriceAcceptRangeMin.setText("0");
              buyPriceAcceptRangeMax.setText("0.32");
              sellPriceAcceptRangeMin.setText("0.25");
              sellPriceAcceptRangeMax.setText("0.4");
+             exceededPrice.setText("0.65");
             ex.printStackTrace();
         }
 	}

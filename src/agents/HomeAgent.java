@@ -54,7 +54,7 @@ public class HomeAgent extends Agent
 			}
 			proposals = new Proposal[retailerAgents.length];
 			retailersAcceptProposal = new boolean[retailerAgents.length];
-			ResetRetailerAccpetStatus();
+			ResetRetailerQuoteAccpetStatus();
 			for (int i = 0; i < applianceAgents.length; i++)
 			{
 				System.out.println("Added " + applianceAgents[i]);
@@ -286,7 +286,7 @@ public class HomeAgent extends Agent
 		requestApplicancePredictUsage();
 	}
 	
-	private void ResetRetailerAccpetStatus()
+	private void ResetRetailerQuoteAccpetStatus()
 	{
 		for(int i =0; i <retailersAcceptProposal.length; i++)
 		{
@@ -311,7 +311,7 @@ public class HomeAgent extends Agent
 		
 		Proposal[] finalProposals = new Proposal[retailerAgents.length];
 		int retailerNegotiatingIndex = 0;
-		ResetRetailerAccpetStatus();
+		ResetRetailerQuoteAccpetStatus();
 		for(int i =0; i < retailerAgents.length; i++)
 		{
 			double _sellPrice = proposals[i].getSellPrice();
@@ -375,7 +375,7 @@ public class HomeAgent extends Agent
 		gui.SetPredictedIncome(predictedIncome, predictedExpense);
 		
 		System.out.println("Choose proposal: " + bestProposal.getRetailerName());
-		ResetRetailerAccpetStatus();
+		ResetRetailerQuoteAccpetStatus();
 		home.reset();
 		System.out.println("--------------------------------------------------------------------------------");
 		System.out.println("--------------------------------------------------------------------------------");

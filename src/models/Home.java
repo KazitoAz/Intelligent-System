@@ -1,7 +1,5 @@
 package models;
 
-import java.util.Random;
-
 public class Home
 {
 	private double totalConsume;
@@ -16,7 +14,7 @@ public class Home
 	}
 	
 	public double getTotalConsume()
-	{;
+	{
 		return Ulti.round(totalConsume);
 	}
 	
@@ -44,8 +42,6 @@ public class Home
 	{
 		totalGenerate+=amount;
 	}
-	
-	
 	
 	public void reset()
 	{
