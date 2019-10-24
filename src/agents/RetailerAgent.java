@@ -24,7 +24,7 @@ public class RetailerAgent extends Agent
 			homeAgent = (String)args[1];
 			System.out.println(retailer.getName() + " is up.");
 			addBehaviour(receiveBehaviour());
-			receivequote();
+			//receivequote();
 		}
 	}
 	
@@ -69,9 +69,8 @@ public class RetailerAgent extends Agent
 	private void readProposal(String msg)
 	{
 		String[] dataString = msg.split(",");
-		double _buyPrice = Double.parseDouble(dataString[1]);
-		double _sellPrice = Double.parseDouble(dataString[2]);
-		
+		double _buyPrice = Double.parseDouble(dataString[2]);
+		double _sellPrice = Double.parseDouble(dataString[1]);
 		if(retailer.proppoaslAccepetable(_sellPrice, _buyPrice))
 		{
 			acceptProposal();
@@ -84,22 +83,22 @@ public class RetailerAgent extends Agent
 	
 	void acceptProposal()
 	{
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		ACLMessage msg = new ACLMessage(ACLMessage.PROPOSE);
 		
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
-		msg.setContent("accept proposal");
+		msg.setContent("accept");
 		msg.setProtocol(FIPAProtocolNames.FIPA_PROPOSE);
 		send(msg);
 	}
 	
 	void rejectProposal()
 	{
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		ACLMessage msg = new ACLMessage(ACLMessage.PROPOSE);
 		
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
-		msg.setContent("reject proposal");
+		msg.setContent("reject");
 		msg.setProtocol(FIPAProtocolNames.FIPA_PROPOSE);
 		send(msg);
 	}
