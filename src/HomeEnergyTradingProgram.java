@@ -45,9 +45,9 @@ public class HomeEnergyTradingProgram
 		};
 		
 		Retailer retailers[] = {
-				new Retailer("AGL", 0.2f,0.3f,false),
-				new Retailer("Origin",0.21f,0.31f,false),
-				new Retailer("EnergyAustralia",0.22f,0.32f,true)
+				new Retailer("AGL", 0.3f,0.25f,false),
+				new Retailer("Origin",0.31f,0.24f,false),
+				new Retailer("EnergyAustralia",0.32f,0.23f,true)
 		};
 		
 		Object[][] applianceArgs = new Object[3][2];

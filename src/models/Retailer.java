@@ -30,25 +30,32 @@ public class Retailer
 	{
 		double newSellPrice = sellPricePerUnit;
 		double newBuyPrice = buyPricePerUnit;
+		Random random = new Random();
 		if(!fixed)
 		{
-			Random random = new Random();
+			
 			newSellPrice = (random.nextDouble()*(1.0f - 0.7f)+0.7f) * sellPricePerUnit;
 			newBuyPrice = (random.nextDouble()*(1.0f - 0.7f)+0.7f) * buyPricePerUnit;
 			
-			lowestAcceptableSellPrice = newSellPrice * (random.nextDouble()*(1.0f - 0.8f)+0.8f);
+			lowestAcceptableSellPrice = Ulti.round(newSellPrice * (random.nextDouble()*(1.0f - 0.8f)+0.8f));
 			
-			highestAcceptableBuyPrice = newBuyPrice *(random.nextDouble()*(1.2f - 1f)+1f);
+			highestAcceptableBuyPrice = Ulti.round(newBuyPrice *(random.nextDouble()*(1.2f - 1f)+1f));
+			
+		}
+		else {
+			
+			lowestAcceptableSellPrice = Ulti.round(sellPricePerUnit * (random.nextDouble()*(1.0f - 0.8f)+0.8f));
+			
+			highestAcceptableBuyPrice = Ulti.round(buyPricePerUnit *(random.nextDouble()*(1.2f - 1f)+1f));
 		}
 		return new Proposal(name, Ulti.round(newSellPrice), Ulti.round(newBuyPrice));
 	}
 	
 	public Boolean proppoaslAccepetable(Double sellPrice, Double buyPirce)
 	{
-		if(sellPrice >= lowestAcceptableSellPrice)
-			if(buyPirce<= highestAcceptableBuyPrice)
-				return true;
-		
-		return false;
+		if(sellPrice >= lowestAcceptableSellPrice && buyPirce<= highestAcceptableBuyPrice)
+			return true;
+		else 
+			return false;
 	}
 }
