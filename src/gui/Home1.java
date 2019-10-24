@@ -126,6 +126,8 @@ public class Home1 extends JFrame {
 		g.drawLine(25, 90, 25, 320);
 		g.drawLine(25, 320, 640, 320);
 		
+		run1();
+		
 		//repaint();
 	}
 
@@ -591,5 +593,18 @@ public class Home1 extends JFrame {
 	public double getMinBuyPrice()
 	{
 		return Double.parseDouble(buyPriceAcceptRangeMin.getText());
+	}
+	
+	public void run1()
+	{
+		try{
+			Thread.sleep(10);
+			
+			
+
+			
+		}catch(Exception e){
+			System.out.println("ERROR");
+		}
 	}
 }
