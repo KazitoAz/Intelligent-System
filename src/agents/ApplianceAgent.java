@@ -41,7 +41,6 @@ public class ApplianceAgent extends Agent
 			protected void onTick()
 			{
 				informConsuming();
-				
 			}
 		};
 	}
@@ -66,7 +65,6 @@ public class ApplianceAgent extends Agent
 						informPredictConsuming();
 					}
 				}
-				
 			}
 		};
 	}

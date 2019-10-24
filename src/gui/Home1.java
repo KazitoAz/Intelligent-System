@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import models.Ulti;
+
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -82,8 +84,8 @@ public class Home1 extends JFrame {
 	private JLabel label_1;
 	private JLabel lblPredictedGenerate;
 	private JLabel lblPredictedConsume;
-	private JLabel label_4;
-	private JLabel label_5;
+	private JLabel predictedConsume;
+	private JLabel predictedGenerate;
 	private JLabel lblPaidExtra;
 	private JLabel predictedExpense;
 	private JLabel lblPredictedIncome;
@@ -158,7 +160,7 @@ public class Home1 extends JFrame {
 		contentPane.add(airConValue);
 
 		solarPanelValue = new JLabel("");
-		solarPanelValue.setForeground(Color.GREEN);
+		solarPanelValue.setForeground(new Color(60, 179, 113));
 		solarPanelValue.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		solarPanelValue.setBounds(151, 414, 116, 25);
 		contentPane.add(solarPanelValue);
@@ -202,37 +204,37 @@ public class Home1 extends JFrame {
 		AGL_sellPrice = new JLabel("");
 		AGL_sellPrice.setForeground(Color.RED);
 		AGL_sellPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		AGL_sellPrice.setBounds(456, 374, 116, 25);
+		AGL_sellPrice.setBounds(445, 374, 116, 25);
 		contentPane.add(AGL_sellPrice);
 
 		origin_sellPrice = new JLabel("");
 		origin_sellPrice.setForeground(Color.RED);
 		origin_sellPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		origin_sellPrice.setBounds(456, 410, 116, 25);
+		origin_sellPrice.setBounds(445, 410, 116, 25);
 		contentPane.add(origin_sellPrice);
 
 		enAus_sellPrice = new JLabel("");
 		enAus_sellPrice.setForeground(Color.RED);
 		enAus_sellPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		enAus_sellPrice.setBounds(456, 444, 116, 25);
+		enAus_sellPrice.setBounds(445, 444, 116, 25);
 		contentPane.add(enAus_sellPrice);
 
 		AGL_buyPrice = new JLabel("");
-		AGL_buyPrice.setForeground(Color.GREEN);
+		AGL_buyPrice.setForeground(new Color(60, 179, 113));
 		AGL_buyPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		AGL_buyPrice.setBounds(591, 374, 116, 25);
+		AGL_buyPrice.setBounds(582, 374, 116, 25);
 		contentPane.add(AGL_buyPrice);
 
 		origin_buyPrice = new JLabel("");
-		origin_buyPrice.setForeground(Color.GREEN);
+		origin_buyPrice.setForeground(new Color(60, 179, 113));
 		origin_buyPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		origin_buyPrice.setBounds(591, 410, 116, 25);
+		origin_buyPrice.setBounds(582, 410, 116, 25);
 		contentPane.add(origin_buyPrice);
 
 		enAus_buyPrice = new JLabel("");
-		enAus_buyPrice.setForeground(Color.GREEN);
+		enAus_buyPrice.setForeground(new Color(60, 179, 113));
 		enAus_buyPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		enAus_buyPrice.setBounds(591, 444, 116, 25);
+		enAus_buyPrice.setBounds(582, 444, 116, 25);
 		contentPane.add(enAus_buyPrice);
 
 		lblHomeAgent = new JLabel("Home Agent");
@@ -259,7 +261,7 @@ public class Home1 extends JFrame {
 
 		total_generate = new JLabel("11");
 		total_generate.setBackground(SystemColor.activeCaption);
-		total_generate.setForeground(Color.GREEN);
+		total_generate.setForeground(new Color(60, 179, 113));
 		total_generate.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		total_generate.setBounds(151, 602, 116, 25);
 		contentPane.add(total_generate);
@@ -281,7 +283,7 @@ public class Home1 extends JFrame {
 		contentPane.add(expense);
 
 		income = new JLabel("");
-		income.setForeground(Color.GREEN);
+		income.setForeground(new Color(60, 179, 113));
 		income.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		income.setBounds(151, 674, 116, 25);
 		contentPane.add(income);
@@ -368,19 +370,19 @@ public class Home1 extends JFrame {
 		lblPredictedConsume.setBounds(330, 566, 130, 25);
 		contentPane.add(lblPredictedConsume);
 		
-		label_4 = new JLabel("11");
-		label_4.setForeground(Color.RED);
-		label_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		label_4.setBackground(SystemColor.activeCaption);
-		label_4.setBounds(476, 566, 116, 25);
-		contentPane.add(label_4);
+		predictedConsume = new JLabel("11");
+		predictedConsume.setForeground(Color.RED);
+		predictedConsume.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		predictedConsume.setBackground(SystemColor.activeCaption);
+		predictedConsume.setBounds(476, 566, 116, 25);
+		contentPane.add(predictedConsume);
 		
-		label_5 = new JLabel("11");
-		label_5.setForeground(Color.GREEN);
-		label_5.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		label_5.setBackground(SystemColor.activeCaption);
-		label_5.setBounds(476, 602, 116, 25);
-		contentPane.add(label_5);
+		predictedGenerate = new JLabel("11");
+		predictedGenerate.setForeground(new Color(60, 179, 113));
+		predictedGenerate.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		predictedGenerate.setBackground(SystemColor.activeCaption);
+		predictedGenerate.setBounds(476, 602, 116, 25);
+		contentPane.add(predictedGenerate);
 		
 		lblPaidExtra = new JLabel("Predicted Expense");
 		lblPaidExtra.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -399,7 +401,7 @@ public class Home1 extends JFrame {
 		contentPane.add(lblPredictedIncome);
 		
 		predictedIncome = new JLabel("");
-		predictedIncome.setForeground(Color.RED);
+		predictedIncome.setForeground(new Color(60, 179, 113));
 		predictedIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		predictedIncome.setBounds(456, 681, 116, 25);
 		contentPane.add(predictedIncome);
@@ -494,5 +496,21 @@ public class Home1 extends JFrame {
 
 	public void SetHour(Integer _hourValue) {
 		current_hour.setText(_hourValue.toString());
+	}
+	
+	public void SetPredictedUsage(Double consume, Double generate)
+	{
+		consume = Ulti.round(consume);
+		generate = Ulti.round(generate);
+		predictedConsume.setText(consume.toString()+ "kwh");
+		predictedGenerate.setText(generate.toString()+ "kwh");
+	}
+	
+	public void SetPredictedIncome(Double income, Double expense)
+	{
+		income = Ulti.round(income);
+		expense = Ulti.round(expense);
+		predictedExpense.setText("$" + expense.toString());
+		predictedIncome.setText("$" + income.toString());
 	}
 }

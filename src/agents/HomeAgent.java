@@ -215,7 +215,7 @@ public class HomeAgent extends Agent
 	{
 		String[] dataStrings = msg.split(",");
 		double consumeAmount = Double.parseDouble(dataStrings[1]);
-		if(consumeAmount>0)
+		if(consumeAmount<0)
 			totalPredictUsage += consumeAmount;
 		else {
 			totalPredictGenerate += consumeAmount;
@@ -223,7 +223,11 @@ public class HomeAgent extends Agent
 		predictReportCount++;
 		if(predictReportCount== retailerAgents.length)
 		{
+			totalPredictUsage = totalPredictUsage*reportInterval;
+			totalPredictGenerate = totalPredictGenerate*reportInterval;
+			gui.SetPredictedUsage(totalPredictUsage, totalPredictGenerate);
 			requestProposals();
+			
 			Sendquote();
 			predictReportCount = 0;
 		}
@@ -240,6 +244,8 @@ public class HomeAgent extends Agent
 		System.out.println("Total generate: " + _totalGenerate + "kwh | Income: $" + _income);
 		gui.UpdateHomeAgent(_totalConsume, _totalGenerate, _expense, _income);
 		applianceReportCount = 0;
+		totalPredictGenerate = 0;
+		totalPredictUsage = 0;
 		requestApplicancePredictUsage();
 	}
 	
@@ -262,6 +268,10 @@ public class HomeAgent extends Agent
 		}
 		home.SetProposal(bestProposal);
 		gui.UpdateContract(bestProposal.getRetailerName());
+		double predictedExpense = totalPredictUsage*bestProposal.getSellPrice();
+		double predictedIncome = totalPredictGenerate*bestProposal.getBuyPrice();
+		gui.SetPredictedIncome(predictedIncome, predictedExpense);
+		
 		System.out.println("Choose proposal: " + bestProposal.getRetailerName());
 		retailerReportCount = 0;
 		home.reset();

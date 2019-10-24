@@ -104,6 +104,6 @@ public class HomeEnergyTradingProgram
 		{
 			e.printStackTrace();
 		}
-
+		
 	}
 }
