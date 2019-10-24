@@ -18,12 +18,14 @@ import models.Appliance;
 import models.ApplianceRecord;
 import models.Home;
 import models.Proposal;
+import models.Ulti;
 
 public class HomeAgent extends Agent
 {
 	private Home home;
 	private String[] retailerAgents;
 	private String[] applianceAgents;
+	private boolean[] retailersAcceptProposal;
 	private double predictConsume;
 	private double predictGenerate;
 	private int reportInterval = 2;
@@ -34,6 +36,7 @@ public class HomeAgent extends Agent
 	private double totalPredictUsage= 0;
 	private double totalPredictGenerate = 0;
 	private int predictReportCount =0;
+	private boolean responsed = true;
 	@Override
 	protected void setup()
 	{
@@ -50,6 +53,8 @@ public class HomeAgent extends Agent
 				System.out.println("Added " + retailerAgents[i]);
 			}
 			proposals = new Proposal[retailerAgents.length];
+			retailersAcceptProposal = new boolean[retailerAgents.length];
+			ResetRetailerAccpetStatus();
 			for (int i = 0; i < applianceAgents.length; i++)
 			{
 				System.out.println("Added " + applianceAgents[i]);
@@ -175,9 +180,35 @@ public class HomeAgent extends Agent
 					{
 						ReadProposal(retailerMsg.getContent());
 					}
+					else if(retailerMsg.getContent().contains("accept"))
+					{
+						SetRetailerAcceptStatus(retailerMsg.getSender().getLocalName(), true);
+						responsed = true;
+						System.out.println("  --Accepted");
+						
+					}
+					else if(retailerMsg.getContent().contains("reject"))
+					{
+						SetRetailerAcceptStatus(retailerMsg.getSender().getLocalName(), false);
+						responsed = true;
+						System.out.println("  --Rejected");
+					}
 				}
 			}
 		};
+	}
+	
+	private void SetRetailerAcceptStatus(String name, Boolean accept)
+	{
+		for(int i =0; i < retailerAgents.length; i++)
+		{
+			if(retailerAgents[i].equals(name))
+			{
+				//System.out.println(accept);
+				retailersAcceptProposal[i] = accept;
+				break;
+			}
+		}
 	}
 	
 	private void ReadApplianceAdviceMessage(String msg, String _name)
@@ -212,6 +243,7 @@ public class HomeAgent extends Agent
 		
 		if(retailerReportCount == retailerAgents.length)
 		{
+			retailerReportCount = 0;
 			ChooseProposal();
 		}
 	}
@@ -233,7 +265,7 @@ public class HomeAgent extends Agent
 			gui.SetPredictedUsage(totalPredictUsage, totalPredictGenerate);
 			requestProposals();
 			
-			Sendquote();
+			//Sendquote();
 			predictReportCount = 0;
 		}
 	}
@@ -252,6 +284,26 @@ public class HomeAgent extends Agent
 		totalPredictGenerate = 0;
 		totalPredictUsage = 0;
 		requestApplicancePredictUsage();
+	}
+	
+	private void ResetRetailerAccpetStatus()
+	{
+		for(int i =0; i <retailersAcceptProposal.length; i++)
+		{
+			retailersAcceptProposal[i] = false;
+		}
+	}
+	
+	private void Negotiate(String _name, double _buyPrice, double _sellPrice)
+	{
+		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+		
+		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
+		msg.addReceiver(new AID(_name, AID.ISLOCALNAME));
+		msg.setContent("negotiate," + _sellPrice + "," + _buyPrice);
+		msg.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
+		
+		send(msg);
 	}
 	
 	private void ChooseProposal()
