@@ -392,7 +392,7 @@ public class Home1 extends JFrame {
 		predictedExpense = new JLabel("");
 		predictedExpense.setForeground(Color.RED);
 		predictedExpense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedExpense.setBounds(456, 638, 116, 25);
+		predictedExpense.setBounds(476, 638, 116, 25);
 		contentPane.add(predictedExpense);
 		
 		lblPredictedIncome = new JLabel("Predicted Income");
@@ -403,7 +403,7 @@ public class Home1 extends JFrame {
 		predictedIncome = new JLabel("");
 		predictedIncome.setForeground(new Color(60, 179, 113));
 		predictedIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedIncome.setBounds(456, 681, 116, 25);
+		predictedIncome.setBounds(476, 681, 116, 25);
 		contentPane.add(predictedIncome);
 	}
 	
