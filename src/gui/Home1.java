@@ -27,6 +27,9 @@ import javax.swing.border.EtchedBorder;
 
 import jade.core.Agent;
 import jade.wrapper.AgentController;
+import javax.swing.JCheckBox;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class Home1 extends JFrame {
 
@@ -92,8 +95,8 @@ public class Home1 extends JFrame {
 	private JLabel line1;
 	private JLabel refrigeratorIcon;
 	private boolean playingAnimation = false;
-	
-
+	private JCheckBox strategy1CheckBox;
+	private JCheckBox strategy2CheckBox;
 	/**
 	 * Launch the application.
 	 */
@@ -421,13 +424,13 @@ public class Home1 extends JFrame {
 		expenseExceed = new JLabel("");
 		expenseExceed.setForeground(Color.RED);
 		expenseExceed.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		expenseExceed.setBounds(233, 630, 122, 25);
+		expenseExceed.setBounds(233, 630, 133, 25);
 		contentPane.add(expenseExceed);
 		
 		predictedExpenseExceed = new JLabel("");
 		predictedExpenseExceed.setForeground(Color.RED);
 		predictedExpenseExceed.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedExpenseExceed.setBounds(560, 630, 109, 25);
+		predictedExpenseExceed.setBounds(560, 630, 160, 25);
 		contentPane.add(predictedExpenseExceed);
 		
 		refrigeratorIcon = new JLabel("");
@@ -491,6 +494,32 @@ public class Home1 extends JFrame {
 		mailPanel.add(line1);
 		mailPanel.add(messageType);
 		mailPanel.add(line2);
+		
+		JLabel lblNegotiation = new JLabel("Negotiation");
+		lblNegotiation.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNegotiation.setBounds(365, 702, 80, 25);
+		contentPane.add(lblNegotiation);
+		
+		strategy1CheckBox = new JCheckBox("Strategy 1");
+		strategy1CheckBox.setSelected(true);
+		strategy1CheckBox.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				strategy2CheckBox.setSelected(!strategy1CheckBox.isSelected());
+			}
+		});
+		strategy1CheckBox.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		strategy1CheckBox.setBounds(451, 705, 95, 23);
+		contentPane.add(strategy1CheckBox);
+		
+		strategy2CheckBox = new JCheckBox("Strategy 2");
+		strategy2CheckBox.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				strategy1CheckBox.setSelected(!strategy2CheckBox.isSelected());
+			}
+		});
+		strategy2CheckBox.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		strategy2CheckBox.setBounds(548, 705, 92, 23);
+		contentPane.add(strategy2CheckBox);
 	}
 	
 	void SaveConfig()
@@ -618,6 +647,11 @@ public class Home1 extends JFrame {
 			predictedExpenseExceed.setText("+$" + amount.toString() + "(Money paid extra)");
 			expenseExceed.setText("");
 		}
+	}
+	
+	public boolean isStrategyOne()
+	{
+		return strategy1CheckBox.isSelected();
 	}
 	
 	public void SetPredictedIncome(Double income, Double expense)
