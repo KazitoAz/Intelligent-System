@@ -1,36 +1,17 @@
 package gui;
-
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
 import models.Ulti;
+import models.Vector2;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JDesktopPane;
-import javax.swing.JSplitPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.DropMode;
 import javax.swing.SwingConstants;
 import java.awt.Font;
-import javax.swing.JComboBox;
-import javax.swing.JProgressBar;
-import javax.swing.JToggleButton;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JSeparator;
 import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -40,12 +21,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import javax.swing.border.EtchedBorder;
 
+import jade.core.Agent;
+import jade.wrapper.AgentController;
 
 public class Home1 extends JFrame {
 
@@ -99,6 +80,19 @@ public class Home1 extends JFrame {
 	private JTextField exceededPrice;
 	private JLabel expenseExceed;
 	private JLabel predictedExpenseExceed;
+	private JLabel airconIcon;
+	private JLabel solarIcon;
+	private JLabel homeIcon;
+	private JLabel aglIcon;
+	private JLabel originIcon;
+	private JLabel enAuIcon;
+	private JLabel line2;
+	private JPanel mailPanel;
+	private JLabel messageType;
+	private JLabel line1;
+	private JLabel refrigeratorIcon;
+	private boolean playingAnimation = false;
+	
 
 	/**
 	 * Launch the application.
@@ -115,21 +109,6 @@ public class Home1 extends JFrame {
 			}
 		});
 	}
-	
-	//public void paint(Graphics g)
-	//{
-		//super.paint(g);
-		//g.setColor(Color.BLACK);
-		//g.drawString("Price", 25, 84);
-		//g.drawString("Hour", 643, 320);
-		
-		//g.drawLine(25, 90, 25, 320);
-		//g.drawLine(25, 320, 640, 320);
-		
-		//run1();
-		
-		//repaint();
-	//}
 
 	/**
 	 * Create the frame.
@@ -139,6 +118,7 @@ public class Home1 extends JFrame {
 			@Override
 			public void windowOpened(WindowEvent e) {
 				ReadConfig();
+				mailPanel.setVisible(false);
 			}
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -146,313 +126,371 @@ public class Home1 extends JFrame {
 			}
 		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 706, 790);
+		setBounds(100, 100, 746, 789);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		JPanel panel = new JPanel();
-		panel.setBounds(5, 41, 675, 255);
-		contentPane.add(panel);
-		//contentPane.setVisible(true);
+		contentPane.setVisible(true);
 
 		JLabel lblApplianceAgents = new JLabel("Appliance Agents");
 		lblApplianceAgents.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblApplianceAgents.setBounds(10, 342, 116, 25);
+		lblApplianceAgents.setBounds(45, 334, 116, 25);
 		contentPane.add(lblApplianceAgents);
 
 		JLabel lblAirconditioner = new JLabel("Air Conditioner");
 		lblAirconditioner.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblAirconditioner.setBounds(25, 378, 116, 25);
+		lblAirconditioner.setBounds(60, 370, 116, 25);
 		contentPane.add(lblAirconditioner);
 
 		lblSolarPanel = new JLabel("Solar Panel");
 		lblSolarPanel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblSolarPanel.setBounds(25, 414, 116, 25);
+		lblSolarPanel.setBounds(60, 406, 116, 25);
 		contentPane.add(lblSolarPanel);
 
 		lblRefrigerator = new JLabel("Refrigerator");
 		lblRefrigerator.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblRefrigerator.setBounds(25, 449, 116, 25);
+		lblRefrigerator.setBounds(60, 441, 116, 25);
 		contentPane.add(lblRefrigerator);
 
 		airConValue = new JLabel("");
 		airConValue.setForeground(Color.RED);
 		airConValue.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		airConValue.setBounds(151, 378, 116, 25);
+		airConValue.setBounds(186, 370, 116, 25);
 		contentPane.add(airConValue);
 
 		solarPanelValue = new JLabel("");
 		solarPanelValue.setForeground(new Color(60, 179, 113));
 		solarPanelValue.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		solarPanelValue.setBounds(151, 414, 116, 25);
+		solarPanelValue.setBounds(186, 406, 116, 25);
 		contentPane.add(solarPanelValue);
 
 		refrigeratorValue = new JLabel("");
 		refrigeratorValue.setForeground(Color.RED);
 		refrigeratorValue.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		refrigeratorValue.setBounds(151, 449, 116, 25);
+		refrigeratorValue.setBounds(186, 441, 116, 25);
 		contentPane.add(refrigeratorValue);
 
 		lblRetailAgents = new JLabel("Retail Agents");
 		lblRetailAgents.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblRetailAgents.setBounds(330, 342, 116, 25);
+		lblRetailAgents.setBounds(365, 334, 116, 25);
 		contentPane.add(lblRetailAgents);
 
 		lblAgl = new JLabel("AGL");
 		lblAgl.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblAgl.setBounds(340, 374, 116, 25);
+		lblAgl.setBounds(375, 366, 116, 25);
 		contentPane.add(lblAgl);
 
 		lblOrigin = new JLabel("Origin");
 		lblOrigin.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblOrigin.setBounds(340, 410, 116, 25);
+		lblOrigin.setBounds(375, 402, 116, 25);
 		contentPane.add(lblOrigin);
 
 		lblEnergyAustralia = new JLabel("Energy Australia");
 		lblEnergyAustralia.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEnergyAustralia.setBounds(340, 444, 116, 25);
+		lblEnergyAustralia.setBounds(375, 436, 116, 25);
 		contentPane.add(lblEnergyAustralia);
 
 		lblSellPrices = new JLabel("Sell Prices");
 		lblSellPrices.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblSellPrices.setBounds(445, 342, 116, 25);
+		lblSellPrices.setBounds(480, 334, 116, 25);
 		contentPane.add(lblSellPrices);
 
 		lblBuyPrices = new JLabel("Buy Prices");
 		lblBuyPrices.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblBuyPrices.setBounds(582, 342, 116, 25);
+		lblBuyPrices.setBounds(617, 334, 116, 25);
 		contentPane.add(lblBuyPrices);
 
 		AGL_sellPrice = new JLabel("");
 		AGL_sellPrice.setForeground(Color.RED);
 		AGL_sellPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		AGL_sellPrice.setBounds(445, 374, 116, 25);
+		AGL_sellPrice.setBounds(480, 366, 116, 25);
 		contentPane.add(AGL_sellPrice);
 
 		origin_sellPrice = new JLabel("");
 		origin_sellPrice.setForeground(Color.RED);
 		origin_sellPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		origin_sellPrice.setBounds(445, 410, 116, 25);
+		origin_sellPrice.setBounds(480, 402, 116, 25);
 		contentPane.add(origin_sellPrice);
 
 		enAus_sellPrice = new JLabel("");
 		enAus_sellPrice.setForeground(Color.RED);
 		enAus_sellPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		enAus_sellPrice.setBounds(445, 444, 116, 25);
+		enAus_sellPrice.setBounds(480, 436, 116, 25);
 		contentPane.add(enAus_sellPrice);
 
 		AGL_buyPrice = new JLabel("");
 		AGL_buyPrice.setForeground(new Color(60, 179, 113));
 		AGL_buyPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		AGL_buyPrice.setBounds(582, 374, 116, 25);
+		AGL_buyPrice.setBounds(617, 366, 116, 25);
 		contentPane.add(AGL_buyPrice);
 
 		origin_buyPrice = new JLabel("");
 		origin_buyPrice.setForeground(new Color(60, 179, 113));
 		origin_buyPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		origin_buyPrice.setBounds(582, 410, 116, 25);
+		origin_buyPrice.setBounds(617, 402, 116, 25);
 		contentPane.add(origin_buyPrice);
 
 		enAus_buyPrice = new JLabel("");
 		enAus_buyPrice.setForeground(new Color(60, 179, 113));
 		enAus_buyPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		enAus_buyPrice.setBounds(582, 444, 116, 25);
+		enAus_buyPrice.setBounds(617, 436, 116, 25);
 		contentPane.add(enAus_buyPrice);
 
 		lblHomeAgent = new JLabel("Home Agent");
 		lblHomeAgent.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblHomeAgent.setBounds(10, 506, 116, 25);
+		lblHomeAgent.setBounds(45, 498, 116, 25);
 		contentPane.add(lblHomeAgent);
 
 		lblTotalConsume = new JLabel("Actual Consume");
 		lblTotalConsume.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTotalConsume.setBounds(25, 566, 116, 25);
+		lblTotalConsume.setBounds(60, 558, 116, 25);
 		contentPane.add(lblTotalConsume);
 
 		lblTotalGenerate = new JLabel("Actual Generate");
 		lblTotalGenerate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTotalGenerate.setBounds(25, 602, 116, 25);
+		lblTotalGenerate.setBounds(60, 594, 116, 25);
 		contentPane.add(lblTotalGenerate);
 
 		total_consume = new JLabel("");
 		total_consume.setBackground(SystemColor.activeCaption);
 		total_consume.setForeground(Color.RED);
 		total_consume.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		total_consume.setBounds(151, 566, 116, 25);
+		total_consume.setBounds(186, 558, 116, 25);
 		contentPane.add(total_consume);
 
 		total_generate = new JLabel("");
 		total_generate.setBackground(SystemColor.activeCaption);
 		total_generate.setForeground(new Color(60, 179, 113));
 		total_generate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		total_generate.setBounds(151, 602, 116, 25);
+		total_generate.setBounds(186, 594, 116, 25);
 		contentPane.add(total_generate);
 
 		lblExpense = new JLabel("Expense");
 		lblExpense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblExpense.setBounds(25, 638, 116, 25);
+		lblExpense.setBounds(60, 630, 116, 25);
 		contentPane.add(lblExpense);
 
 		lblIncome = new JLabel("Income");
 		lblIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblIncome.setBounds(25, 674, 116, 25);
+		lblIncome.setBounds(60, 666, 116, 25);
 		contentPane.add(lblIncome);
 
 		expense = new JLabel("");
 		expense.setForeground(Color.RED);
 		expense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		expense.setBounds(151, 638, 50, 25);
+		expense.setBounds(186, 630, 50, 25);
 		contentPane.add(expense);
 
 		income = new JLabel("");
 		income.setForeground(new Color(60, 179, 113));
 		income.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		income.setBounds(151, 674, 80, 25);
+		income.setBounds(186, 666, 80, 25);
 		contentPane.add(income);
 
 		lblContractWith = new JLabel("Contract With");
 		lblContractWith.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblContractWith.setBounds(25, 710, 116, 25);
+		lblContractWith.setBounds(60, 702, 116, 25);
 		contentPane.add(lblContractWith);
 
 		contract_company = new JLabel("");
 		contract_company.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		contract_company.setBounds(151, 710, 116, 25);
+		contract_company.setBounds(186, 702, 116, 25);
 		contentPane.add(contract_company);
 
 		lblHour = new JLabel("Hour");
 		lblHour.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblHour.setBounds(10, 306, 57, 25);
+		lblHour.setBounds(45, 298, 57, 25);
 		contentPane.add(lblHour);
 
 		current_hour = new JLabel("");
 		current_hour.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		current_hour.setBounds(50, 306, 116, 25);
+		current_hour.setBounds(85, 298, 116, 25);
 		contentPane.add(current_hour);
 		
 		JLabel lblSmartHomeDashboard = new JLabel("Smart Home Dashboard");
 		lblSmartHomeDashboard.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblSmartHomeDashboard.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSmartHomeDashboard.setBounds(5, 0, 675, 43);
+		lblSmartHomeDashboard.setBounds(5, -1, 675, 43);
 		contentPane.add(lblSmartHomeDashboard);
 		
 		lblSellPriceAccept = new JLabel("Sell Price Accept Range");
 		lblSellPriceAccept.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblSellPriceAccept.setBounds(25, 530, 151, 25);
+		lblSellPriceAccept.setBounds(60, 522, 151, 25);
 		contentPane.add(lblSellPriceAccept);
 		
 		lblBuyPriceAccept = new JLabel("Buy Price Accept Range");
 		lblBuyPriceAccept.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblBuyPriceAccept.setBounds(329, 530, 151, 25);
+		lblBuyPriceAccept.setBounds(364, 522, 151, 25);
 		contentPane.add(lblBuyPriceAccept);
 		
 		sellPriceAcceptRangeMin = new JTextField();
 		sellPriceAcceptRangeMin.setBackground(SystemColor.control);
-		sellPriceAcceptRangeMin.setBounds(168, 534, 57, 20);
+		sellPriceAcceptRangeMin.setBounds(203, 526, 57, 20);
 		contentPane.add(sellPriceAcceptRangeMin);
 		sellPriceAcceptRangeMin.setColumns(10);
 		
 		buyPriceAcceptRangeMin = new JTextField();
 		buyPriceAcceptRangeMin.setColumns(10);
 		buyPriceAcceptRangeMin.setBackground(SystemColor.menu);
-		buyPriceAcceptRangeMin.setBounds(476, 534, 57, 20);
+		buyPriceAcceptRangeMin.setBounds(511, 526, 57, 20);
 		contentPane.add(buyPriceAcceptRangeMin);
 		
 		sellPriceAcceptRangeMax = new JTextField();
 		sellPriceAcceptRangeMax.setColumns(10);
 		sellPriceAcceptRangeMax.setBackground(SystemColor.menu);
-		sellPriceAcceptRangeMax.setBounds(235, 534, 57, 20);
+		sellPriceAcceptRangeMax.setBounds(270, 526, 57, 20);
 		contentPane.add(sellPriceAcceptRangeMax);
 		
 		buyPriceAcceptRangeMax = new JTextField();
 		buyPriceAcceptRangeMax.setColumns(10);
 		buyPriceAcceptRangeMax.setBackground(SystemColor.menu);
-		buyPriceAcceptRangeMax.setBounds(548, 534, 57, 20);
+		buyPriceAcceptRangeMax.setBounds(583, 526, 57, 20);
 		contentPane.add(buyPriceAcceptRangeMax);
 		
 		label = new JLabel("-");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		label.setBounds(225, 530, 10, 25);
+		label.setBounds(260, 522, 10, 25);
 		contentPane.add(label);
 		
 		label_1 = new JLabel("-");
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		label_1.setBounds(534, 530, 10, 25);
+		label_1.setBounds(569, 522, 10, 25);
 		contentPane.add(label_1);
 		
 		lblPredictedGenerate = new JLabel("Predicted  Generate");
 		lblPredictedGenerate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPredictedGenerate.setBounds(330, 602, 126, 25);
+		lblPredictedGenerate.setBounds(365, 594, 126, 25);
 		contentPane.add(lblPredictedGenerate);
 		
 		lblPredictedConsume = new JLabel("Predicted Consume");
 		lblPredictedConsume.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPredictedConsume.setBounds(330, 566, 130, 25);
+		lblPredictedConsume.setBounds(365, 558, 130, 25);
 		contentPane.add(lblPredictedConsume);
 		
 		predictedConsume = new JLabel("");
 		predictedConsume.setForeground(Color.RED);
 		predictedConsume.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		predictedConsume.setBackground(SystemColor.activeCaption);
-		predictedConsume.setBounds(476, 566, 116, 25);
+		predictedConsume.setBounds(511, 558, 116, 25);
 		contentPane.add(predictedConsume);
 		
 		predictedGenerate = new JLabel("");
 		predictedGenerate.setForeground(new Color(60, 179, 113));
 		predictedGenerate.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		predictedGenerate.setBackground(SystemColor.activeCaption);
-		predictedGenerate.setBounds(476, 602, 116, 25);
+		predictedGenerate.setBounds(511, 594, 116, 25);
 		contentPane.add(predictedGenerate);
 		
 		lblPaidExtra = new JLabel("Predicted Expense");
 		lblPaidExtra.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPaidExtra.setBounds(330, 638, 116, 25);
+		lblPaidExtra.setBounds(365, 630, 116, 25);
 		contentPane.add(lblPaidExtra);
 		
 		predictedExpense = new JLabel("");
 		predictedExpense.setForeground(Color.RED);
 		predictedExpense.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedExpense.setBounds(476, 638, 50, 25);
+		predictedExpense.setBounds(511, 630, 50, 25);
 		contentPane.add(predictedExpense);
 		
 		lblPredictedIncome = new JLabel("Predicted Income");
 		lblPredictedIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPredictedIncome.setBounds(330, 674, 116, 25);
+		lblPredictedIncome.setBounds(365, 666, 116, 25);
 		contentPane.add(lblPredictedIncome);
 		
 		predictedIncome = new JLabel("");
 		predictedIncome.setForeground(new Color(60, 179, 113));
 		predictedIncome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedIncome.setBounds(476, 674, 68, 25);
+		predictedIncome.setBounds(511, 666, 68, 25);
 		contentPane.add(predictedIncome);
 		
 		JLabel lblExceededEnergyPrice = new JLabel("Exceeded energy price");
 		lblExceededEnergyPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblExceededEnergyPrice.setBounds(330, 306, 143, 25);
+		lblExceededEnergyPrice.setBounds(365, 298, 143, 25);
 		contentPane.add(lblExceededEnergyPrice);
 		
 		exceededPrice = new JTextField();
 		exceededPrice.setColumns(10);
 		exceededPrice.setBackground(SystemColor.menu);
-		exceededPrice.setBounds(476, 310, 57, 20);
+		exceededPrice.setBounds(511, 302, 57, 20);
 		contentPane.add(exceededPrice);
 		
 		expenseExceed = new JLabel("");
 		expenseExceed.setForeground(Color.RED);
 		expenseExceed.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		expenseExceed.setBounds(198, 638, 57, 25);
+		expenseExceed.setBounds(233, 630, 122, 25);
 		contentPane.add(expenseExceed);
 		
 		predictedExpenseExceed = new JLabel("");
 		predictedExpenseExceed.setForeground(Color.RED);
 		predictedExpenseExceed.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		predictedExpenseExceed.setBounds(525, 638, 57, 25);
+		predictedExpenseExceed.setBounds(560, 630, 109, 25);
 		contentPane.add(predictedExpenseExceed);
+		
+		refrigeratorIcon = new JLabel("");
+		refrigeratorIcon.setBounds(35, 213, 74, 74);
+		contentPane.add(refrigeratorIcon);
+		Image refrigeratorImg =  new ImageIcon(this.getClass().getResource("/refrigerator.png")).getImage(); 
+		refrigeratorIcon.setIcon(new ImageIcon(refrigeratorImg));
+		
+		airconIcon = new JLabel("");
+		airconIcon.setBounds(35, 53, 74, 74);
+		contentPane.add(airconIcon);
+		Image airconImg =  new ImageIcon(this.getClass().getResource("/aircon.png")).getImage(); 
+		airconIcon.setIcon(new ImageIcon(airconImg));
+		
+		solarIcon = new JLabel("");
+		solarIcon.setBounds(35, 133, 74, 74);
+		contentPane.add(solarIcon);
+		Image solarPanelImg =  new ImageIcon(this.getClass().getResource("/solar.png")).getImage(); 
+		solarIcon.setIcon(new ImageIcon(solarPanelImg));
+		
+		homeIcon = new JLabel("");
+		homeIcon.setBounds(327, 133, 74, 74);
+		contentPane.add(homeIcon);
+		Image homeImg =  new ImageIcon(this.getClass().getResource("/home.png")).getImage(); 
+		homeIcon.setIcon(new ImageIcon(homeImg));
+		
+		aglIcon = new JLabel("");
+		aglIcon.setBounds(606, 53, 74, 74);
+		contentPane.add(aglIcon);
+		Image aglImg =  new ImageIcon(this.getClass().getResource("/agl.png")).getImage(); 
+		aglIcon.setIcon(new ImageIcon(aglImg));
+		
+		originIcon = new JLabel("");
+		originIcon.setBounds(606, 133, 74, 74);
+		contentPane.add(originIcon);
+		Image originImg =  new ImageIcon(this.getClass().getResource("/origin.png")).getImage(); 
+		originIcon.setIcon(new ImageIcon(originImg));
+		
+		enAuIcon = new JLabel("");
+		enAuIcon.setBounds(606, 213, 74, 74);
+		contentPane.add(enAuIcon);
+		Image enAuImg =  new ImageIcon(this.getClass().getResource("/enAu.png")).getImage(); 
+		enAuIcon.setIcon(new ImageIcon(enAuImg));
+		
+		mailPanel = new JPanel();
+		mailPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		mailPanel.setBounds(186, 237, 180, 49);
+		contentPane.add(mailPanel);
+		
+		messageType = new JLabel("Negotiate");
+		messageType.setBounds(2, 2, 168, 14);
+		
+		line1 = new JLabel("Buy Price: $0.35/kwh");
+		line1.setBounds(2, 16, 168, 14);
+		line1.setVerticalAlignment(SwingConstants.TOP);
+		
+		line2 = new JLabel("Buy Price: $0.35/kwh");
+		line2.setBounds(2, 30, 168, 14);
+		line2.setVerticalAlignment(SwingConstants.TOP);
+		mailPanel.setLayout(null);
+		mailPanel.add(line1);
+		mailPanel.add(messageType);
+		mailPanel.add(line2);
 	}
 	
 	void SaveConfig()
@@ -513,7 +551,7 @@ public class Home1 extends JFrame {
 		}
 	}
 
-	public void UpdateRetailerValues(String _name, Double _buy, Double _sell) {
+	public void UpdateRetailerValues(String _name, Double _sell, Double _buy) {
 		switch (_name) {
 		case "AGL":
 			AGL_buyPrice.setText("$" + _buy.toString() + "/kwh");
@@ -557,6 +595,11 @@ public class Home1 extends JFrame {
 		predictedGenerate.setText(generate.toString()+ "kwh");
 	}
 	
+	public boolean isPlayingAnimation()
+	{
+		return playingAnimation;
+	}
+	
 	public void SetExceededExpense(Double amount, Double contractSellPrice)
 	{
 		
@@ -564,7 +607,7 @@ public class Home1 extends JFrame {
 		{
 			amount = amount * Double.parseDouble(exceededPrice.getText());
 			amount = Ulti.round(amount);
-			expenseExceed.setText("+$" + amount.toString());
+			expenseExceed.setText("+$" + amount.toString()+ "(Exceed fee)");
 			predictedExpenseExceed.setText("");
 		}
 		else 
@@ -572,7 +615,7 @@ public class Home1 extends JFrame {
 			amount = Math.abs(amount);
 			amount*= contractSellPrice;
 			amount = Ulti.round(amount);
-			predictedExpenseExceed.setText("+$" + amount.toString());
+			predictedExpenseExceed.setText("+$" + amount.toString() + "(Money paid extra)");
 			expenseExceed.setText("");
 		}
 	}
@@ -595,16 +638,4 @@ public class Home1 extends JFrame {
 		return Double.parseDouble(buyPriceAcceptRangeMin.getText());
 	}
 	
-	//public void run1()
-	//{
-		//try{
-			//Thread.sleep(10);
-			
-			
-
-			
-		//}catch(Exception e){
-			//System.out.println("ERROR");
-		//}
-	//}
 }
