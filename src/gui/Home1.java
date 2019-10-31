@@ -638,4 +638,53 @@ public class Home1 extends JFrame {
 		return Double.parseDouble(buyPriceAcceptRangeMin.getText());
 	}
 	
+	public void SendMessage(String title, String from, String to, String content1, String content2,  Agent a)
+	{
+		long startTime = System.currentTimeMillis();
+		long estimatedTime = 0;
+		Vector2 startPoint = getContentPosition(from);
+		Vector2 endPoint = getContentPosition(to);
+		messageType.setText(title);
+		line1.setText(content1);
+		line2.setText(content2);
+		mailPanel.setVisible(true);
+		double distance = Vector2.Distance(startPoint, endPoint);
+		Vector2 direction = Vector2.getDirection(startPoint, endPoint).normailized();
+		mailPanel.setBounds((int)startPoint.x, (int)startPoint.y, mailPanel.getBounds().width, mailPanel.getBounds().height);
+		playingAnimation = true;
+		while(Vector2.Distance(mailPanel.bounds().getCenterX(), mailPanel.bounds().getCenterY(), endPoint.x, endPoint.y) > 1 && estimatedTime < 2000)
+		{
+			estimatedTime = System.currentTimeMillis() - startTime;
+			double nextDis = (estimatedTime/2000f) * distance;
+			Vector2 nextPos = Vector2.multiply(direction, nextDis);
+			nextPos.add(startPoint);
+			mailPanel.setBounds((int)nextPos.x, (int)nextPos.y, mailPanel.getBounds().width, mailPanel.getBounds().height);
+		}
+		playingAnimation = false;
+		mailPanel.setVisible(false);
+	}
+	
+	Vector2 getContentPosition(String name) // get item position in GUI
+	{
+		switch (name) {
+		case "SolarPanel":
+			return new Vector2(solarIcon.bounds().getCenterX(), solarIcon.bounds().getCenterY());
+		case "AirConditioner":
+			return new Vector2(airconIcon.bounds().getCenterX(), airconIcon.bounds().getCenterY());
+		case "Refrigerator":
+			return new Vector2(refrigeratorIcon.bounds().getCenterX(), refrigeratorIcon.bounds().getCenterY());
+		case "AGL":
+			return new Vector2(aglIcon.bounds().getCenterX(), aglIcon.bounds().getCenterY());
+		case "Origin":
+			return new Vector2(originIcon.bounds().getCenterX(), originIcon.bounds().getCenterY());
+		case "EnergyAustralia":
+			return new Vector2(enAuIcon.bounds().getCenterX(), enAuIcon.bounds().getCenterY());
+		case "HomeAgent":
+			return new Vector2(homeIcon.bounds().getCenterX(), homeIcon.bounds().getCenterY());
+		default:
+			return null;
+		}
+	}
 }
+
+
