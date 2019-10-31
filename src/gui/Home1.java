@@ -116,20 +116,20 @@ public class Home1 extends JFrame {
 		});
 	}
 	
-	public void paint(Graphics g)
-	{
-		super.paint(g);
-		g.setColor(Color.BLACK);
-		g.drawString("Price", 25, 84);
-		g.drawString("Hour", 643, 320);
+	//public void paint(Graphics g)
+	//{
+		//super.paint(g);
+		//g.setColor(Color.BLACK);
+		//g.drawString("Price", 25, 84);
+		//g.drawString("Hour", 643, 320);
 		
-		g.drawLine(25, 90, 25, 320);
-		g.drawLine(25, 320, 640, 320);
+		//g.drawLine(25, 90, 25, 320);
+		//g.drawLine(25, 320, 640, 320);
 		
-		run1();
+		//run1();
 		
 		//repaint();
-	}
+	//}
 
 	/**
 	 * Create the frame.
@@ -156,7 +156,7 @@ public class Home1 extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setBounds(5, 41, 675, 255);
 		contentPane.add(panel);
-		contentPane.setVisible(true);
+		//contentPane.setVisible(true);
 
 		JLabel lblApplianceAgents = new JLabel("Appliance Agents");
 		lblApplianceAgents.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -595,16 +595,16 @@ public class Home1 extends JFrame {
 		return Double.parseDouble(buyPriceAcceptRangeMin.getText());
 	}
 	
-	public void run1()
-	{
-		try{
-			Thread.sleep(10);
+	//public void run1()
+	//{
+		//try{
+			//Thread.sleep(10);
 			
 			
 
 			
-		}catch(Exception e){
-			System.out.println("ERROR");
-		}
-	}
+		//}catch(Exception e){
+			//System.out.println("ERROR");
+		//}
+	//}
 }
