@@ -1,6 +1,7 @@
 package agents;
 
 import FIPA.stringsHelper;
+import gui.Home1;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -19,6 +20,7 @@ public class ApplianceAgent extends Agent
 	private Appliance appliance;
 	private String homeAgentName;
 	private ApplianceRecord records = new ApplianceRecord();
+	private Home1 gui;
 	@Override
 	protected void setup()
 	{
@@ -27,7 +29,9 @@ public class ApplianceAgent extends Agent
 		{
 			appliance = (Appliance)args[0];
 			homeAgentName = (String)args[1];
+			gui = (Home1)args[2];
 			addBehaviour(receiveBehaviour());
+			records.AddToRecord(appliance.getConsumeRate());
 			System.out.println(appliance.getName() + " is up.");
 		}
 	}
@@ -77,13 +81,17 @@ public class ApplianceAgent extends Agent
 		msg.addReceiver(new AID(homeAgentName, AID.ISLOCALNAME));
 		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
 		
-		double consumeRate = appliance.getConsumeRate();
+		Double consumeRate = appliance.getConsumeRate();
 		records.AddToRecord(consumeRate);
 		msg.setContent("advice," + consumeRate );
 		System.out.println(appliance.getName() +": " +consumeRate +"kwh");
+		String s = "Generated ";
+		if(consumeRate < 0)
+			s = "Consumed";
+		consumeRate = Math.abs(consumeRate);
+		gui.SendMessage("Sending consuming", getLocalName(), homeAgentName, s + consumeRate.toString() + "kwh", "", this);
 		send(msg);
 	}
-	
 	private void informPredictConsuming()
 	{
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
@@ -92,7 +100,13 @@ public class ApplianceAgent extends Agent
 		msg.addReceiver(new AID(homeAgentName, AID.ISLOCALNAME));
 		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
 		
-		msg.setContent("predict," + records.GetAverageUsage() );
+		Double predictedConsume = records.GetAverageUsage();
+		msg.setContent("predict," + predictedConsume);
+		String s = "Generated ";
+		if(predictedConsume < 0)
+			s = "Consumed ";
+		predictedConsume = Math.abs(predictedConsume);
+		gui.SendMessage("Sending prediction", getLocalName(), homeAgentName, s + predictedConsume.toString() +"kwh", "", this);
 		send(msg);
 	}
 }

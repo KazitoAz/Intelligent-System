@@ -1,5 +1,6 @@
 package agents;
 
+import gui.Home1;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -8,12 +9,14 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.FIPAProtocolNames;
+import models.Proposal;
 import models.Retailer;
 
 public class RetailerAgent extends Agent
 {
 	protected Retailer retailer;
 	private String homeAgent;
+	private Home1 gui;
 	@Override
 	protected void setup()
 	{
@@ -22,6 +25,7 @@ public class RetailerAgent extends Agent
 		{
 			retailer = (Retailer)args[0];
 			homeAgent = (String)args[1];
+			gui = (Home1)args[2];
 			System.out.println(retailer.getName() + " is up.");
 			addBehaviour(receiveBehaviour());
 			//receivequote();
@@ -89,6 +93,7 @@ public class RetailerAgent extends Agent
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
 		msg.setContent("accept");
 		msg.setProtocol(FIPAProtocolNames.FIPA_PROPOSE);
+		gui.SendMessage("Accept", getLocalName(), homeAgent, "","", this);
 		send(msg);
 	}
 	
@@ -100,6 +105,7 @@ public class RetailerAgent extends Agent
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
 		msg.setContent("reject");
 		msg.setProtocol(FIPAProtocolNames.FIPA_PROPOSE);
+		gui.SendMessage("Reject", getLocalName(), homeAgent, "","", this);
 		send(msg);
 	}
 	
@@ -125,8 +131,11 @@ public class RetailerAgent extends Agent
 		
 		msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
 		msg.addReceiver(new AID(homeAgent, AID.ISLOCALNAME));
-		msg.setContent(retailer.getProposal().toString());
+		
+		Proposal proposal = retailer.getProposal();
+		msg.setContent(proposal.toString());
 		msg.setProtocol(FIPAProtocolNames.FIPA_PROPOSE);
+		gui.SendMessage("Send proposal", getLocalName(), homeAgent, "Sell Price: $" + proposal.getSellPrice()+"/kwh","Buy Price: $" + proposal.getBuyPrice()+"/kwh", this);
 		send(msg);
 	}
 }

@@ -60,74 +60,56 @@ public class HomeAgent extends Agent
 				System.out.println("Added " + applianceAgents[i]);
 			}
 			gui = (Home1)args[3];
-			requestProposals();
 			System.out.println("Home agent is up.");
-			addBehaviour(homeAgentTickBehaviour());
 			addBehaviour(receiveBehaviour());
+			requestApplicancePredictUsage(0);
 		}
 	}
 	
-	private Behaviour homeAgentTickBehaviour()
+	private void requestAppliancesUsage(int idx)
 	{
-		return new TickerBehaviour(this, 1000)
-		{
-			@Override
-			protected void onTick()
-			{
-				if((applianceReportCount+applianceAgents.length) % applianceAgents.length == 0)
-				{
-					int _hour = Math.round(applianceReportCount/applianceAgents.length + 1);
-					System.out.println("-Hour " +  _hour+ ":");
-					gui.SetHour(_hour);
-				}
-				requestAppliancesUsage();
-			}
-		};
-	}
-	
-	private void requestAppliancesUsage()
-	{
-		for (String applianceName : applianceAgents)
-		{
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 			
 			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
-			msg.addReceiver(new AID(applianceName, AID.ISLOCALNAME));
+			msg.addReceiver(new AID(applianceAgents[idx], AID.ISLOCALNAME));
 			msg.setContent("request usage");
 			msg.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
-			
+			gui.SendMessage("Request Usage", getLocalName(), applianceAgents[idx], "from " + applianceAgents[idx], "", this);
 			send(msg);
-		}
 	}
 	
-	private void requestApplicancePredictUsage()
+	private void requestApplicancePredictUsage(int idx)
 	{
-		for (String applianceName : applianceAgents)
-		{
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 			
 			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
-			msg.addReceiver(new AID(applianceName, AID.ISLOCALNAME));
+			msg.addReceiver(new AID(applianceAgents[idx], AID.ISLOCALNAME));
 			msg.setContent("predict usage");
 			msg.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
 			
+			gui.SendMessage("Request Prediction", getLocalName(), applianceAgents[idx], "from " + applianceAgents[idx], "", this);
 			send(msg);
-		}
 	}
 	
-	private void requestProposals()
+	private void requestProposals(int idx)
 	{
-		for (String retailerName : retailerAgents)
-		{
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 			
 			msg.setSender(new AID(getLocalName(), AID.ISLOCALNAME));
-			msg.addReceiver(new AID(retailerName, AID.ISLOCALNAME));
+			msg.addReceiver(new AID(retailerAgents[idx], AID.ISLOCALNAME));
 			msg.setContent("request proposal");
 			msg.setProtocol(FIPAProtocolNames.FIPA_REQUEST);
-			
+			gui.SendMessage("Request proposal", getLocalName(), retailerAgents[idx], "from " + retailerAgents[idx], "", this);
 			send(msg);
+	}
+	
+	int getIndexOf(Object[] array, Object item)
+	{
+		for (int i = 0; i < array.length; i++) {
+			if(array[i].equals(item))
+				return i;
 		}
+		return 0;
 	}
 	
 	private void Sendquote()
@@ -144,7 +126,6 @@ public class HomeAgent extends Agent
             send(a);
         }
 	}
-	
 	
 	private Behaviour receiveBehaviour()
 	{
@@ -164,11 +145,6 @@ public class HomeAgent extends Agent
 					else if(appilanceMsg.getContent().contains("predict"))
 					{
 						ReadAppliancePredictMessage(appilanceMsg.getContent());
-					}
-					
-					if(applianceReportCount ==reportInterval*applianceAgents.length)
-					{
-						PeriodSummary();
 					}
 				}
 				
@@ -222,6 +198,14 @@ public class HomeAgent extends Agent
 		
 		gui.UpdateApplianceValues(_name, consumeAmount);
 		applianceReportCount++;
+		if(applianceReportCount < applianceAgents.length)
+		{
+			System.out.println(applianceReportCount);
+			requestAppliancesUsage(applianceReportCount);
+		}
+		else {
+			PeriodSummary();
+		}
 	}
 	
 	private void ReadProposal(String msg)
@@ -232,20 +216,25 @@ public class HomeAgent extends Agent
 			if(dataStrings[1].equals(retailerAgents[i]))
 			{
 				String _retailerName = dataStrings[1];
-				double _buy = Double.parseDouble(dataStrings[2]);
-				double _sell = Double.parseDouble(dataStrings[3]);
-				proposals[i] = new Proposal(_retailerName,  _buy, _sell);
-				gui.UpdateRetailerValues(_retailerName, _buy, _sell);
+				double _sell = Double.parseDouble(dataStrings[2]);
+				double _buy = Double.parseDouble(dataStrings[3]);
+				proposals[i] = new Proposal(_retailerName, _sell , _buy);
+
+				gui.UpdateRetailerValues(_retailerName, _sell , _buy);
 				retailerReportCount++;
+				if(retailerReportCount == retailerAgents.length)
+				{
+					retailerReportCount = 0;
+					ChooseProposal();
+				}
+				else {
+					requestProposals(retailerReportCount);
+				}
 				break;
 			}
 		}
 		
-		if(retailerReportCount == retailerAgents.length)
-		{
-			retailerReportCount = 0;
-			ChooseProposal();
-		}
+		
 	}
 	
 	private void ReadAppliancePredictMessage(String msg)
@@ -258,13 +247,17 @@ public class HomeAgent extends Agent
 			totalPredictGenerate += consumeAmount;
 		}
 		predictReportCount++;
+		
 		if(predictReportCount== retailerAgents.length)
 		{
 			totalPredictUsage = totalPredictUsage*reportInterval;
 			totalPredictGenerate = totalPredictGenerate*reportInterval;
 			gui.SetPredictedUsage(totalPredictUsage, totalPredictGenerate);
-			requestProposals();
+			requestProposals(0);
 			predictReportCount = 0;
+		}
+		else {
+			requestApplicancePredictUsage(predictReportCount);
 		}
 	}
 	
@@ -287,7 +280,7 @@ public class HomeAgent extends Agent
 		applianceReportCount = 0;
 		totalPredictGenerate = 0;
 		totalPredictUsage = 0;
-		requestApplicancePredictUsage();
+		requestApplicancePredictUsage(0);
 	}
 	
 	private void ResetRetailerQuoteAccpetStatus()
@@ -320,15 +313,16 @@ public class HomeAgent extends Agent
 			double _buyPrice = proposals[i].getBuyPrice();
 			System.out.println("Neogatiating with "+ retailerAgents[i]);
 			System.out.println("Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
-			_sellPrice = _sellPrice*0.5f;
+			_sellPrice = _sellPrice*0.7f;
 			while(!retailersAcceptProposal[i])
 			{
 				if(responsed)
 				{
 					_sellPrice = Ulti.round(_sellPrice * 1.1f);//increase buy price by 10% if proposal rejected
-					Negotiate(retailerAgents[i], _buyPrice, _sellPrice);
+					
 					System.out.print(" Negotiating with Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
-					this.doWait(1000);
+					gui.SendMessage("Negotiation", this.getLocalName(), retailerAgents[i], "Sell price: $" + _sellPrice + "/kwh" , "", this);
+					Negotiate(retailerAgents[i], _buyPrice, _sellPrice);
 					responsed = false;
 				}
 				receiveBehaviour().action();
@@ -336,16 +330,17 @@ public class HomeAgent extends Agent
 			if(_sellPrice > proposals[i].getSellPrice())
 				_sellPrice =  proposals[i].getSellPrice();
 			retailersAcceptProposal[i] = false;
-			_buyPrice = _buyPrice*1.5f;
+			_buyPrice = _buyPrice*1.3f;
 			
 			while(!retailersAcceptProposal[i])
 			{
 				if(responsed)
 				{
 					_buyPrice = Ulti.round(_buyPrice*0.9f); //decrease sell price by 10% if proposal rejected
-					Negotiate(retailerAgents[i], _buyPrice, _sellPrice);
-					System.out.print(" Negotiating with Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
 					
+					System.out.print(" Negotiating with Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
+					gui.SendMessage("Negotiation", this.getLocalName(), retailerAgents[i], "Buy price: $" + _buyPrice + "/kwh" , "", this);
+					Negotiate(retailerAgents[i], _buyPrice, _sellPrice);
 					responsed = false;
 				}
 				receiveBehaviour().action();
@@ -353,6 +348,7 @@ public class HomeAgent extends Agent
 			if(_buyPrice < proposals[i].getBuyPrice())
 				_buyPrice =  proposals[i].getBuyPrice();
 			finalProposals[i] = new Proposal(retailerAgents[i], _sellPrice, _buyPrice);
+			gui.UpdateRetailerValues(retailerAgents[i], finalProposals[i].getSellPrice(), finalProposals[i].getBuyPrice());
 			System.out.println("Final proposal Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
 			System.out.println("------------------------------------");
 		}
@@ -381,5 +377,6 @@ public class HomeAgent extends Agent
 		home.reset();
 		System.out.println("--------------------------------------------------------------------------------");
 		System.out.println("--------------------------------------------------------------------------------");
+		requestAppliancesUsage(0);
 	}
 }
