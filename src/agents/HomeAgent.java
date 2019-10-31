@@ -250,8 +250,6 @@ public class HomeAgent extends Agent
 		
 		if(predictReportCount== retailerAgents.length)
 		{
-			totalPredictUsage = totalPredictUsage*reportInterval;
-			totalPredictGenerate = totalPredictGenerate*reportInterval;
 			gui.SetPredictedUsage(totalPredictUsage, totalPredictGenerate);
 			requestProposals(0);
 			predictReportCount = 0;
@@ -305,6 +303,28 @@ public class HomeAgent extends Agent
 	
 	private void ChooseProposal()
 	{
+		Proposal bestProposal = null;
+		if(gui.isStrategyOne())
+			bestProposal = StrategyOne();
+		else 
+			bestProposal = StrategyTwo();
+		
+		home.SetProposal(bestProposal);
+		gui.UpdateContract(bestProposal.getRetailerName());
+		double predictedExpense = totalPredictUsage*bestProposal.getSellPrice();
+		double predictedIncome = totalPredictGenerate*bestProposal.getBuyPrice();
+		gui.SetPredictedIncome(predictedIncome, predictedExpense);
+		
+		System.out.println("Choose proposal: " + bestProposal.getRetailerName());
+		ResetRetailerQuoteAccpetStatus();
+		home.reset();
+		System.out.println("--------------------------------------------------------------------------------");
+		System.out.println("--------------------------------------------------------------------------------");
+		requestAppliancesUsage(0);
+	}
+	
+	private Proposal StrategyOne()
+	{
 		Proposal[] finalProposals = new Proposal[retailerAgents.length];
 		ResetRetailerQuoteAccpetStatus();
 		for(int i =0; i < retailerAgents.length; i++)
@@ -313,7 +333,7 @@ public class HomeAgent extends Agent
 			double _buyPrice = proposals[i].getBuyPrice();
 			System.out.println("Neogatiating with "+ retailerAgents[i]);
 			System.out.println("Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
-			_sellPrice = _sellPrice*0.7f;
+			_sellPrice = _sellPrice*0.7f; //drop sell price for 30%
 			while(!retailersAcceptProposal[i])
 			{
 				if(responsed)
@@ -330,7 +350,7 @@ public class HomeAgent extends Agent
 			if(_sellPrice > proposals[i].getSellPrice())
 				_sellPrice =  proposals[i].getSellPrice();
 			retailersAcceptProposal[i] = false;
-			_buyPrice = _buyPrice*1.3f;
+			_buyPrice = _buyPrice*1.3f; //increase buy price for 30%
 			
 			while(!retailersAcceptProposal[i])
 			{
@@ -353,6 +373,79 @@ public class HomeAgent extends Agent
 			System.out.println("------------------------------------");
 		}
 		
+		return GetBestProposal(finalProposals);
+	}
+	
+	private Proposal StrategyTwo()
+	{
+		Proposal[] finalProposals = new Proposal[retailerAgents.length];
+		ResetRetailerQuoteAccpetStatus();
+		for(int i =0; i < retailerAgents.length; i++)
+		{
+			double _sellPrice = proposals[i].getSellPrice();
+			double _buyPrice = proposals[i].getBuyPrice();
+			
+			if(predictConsume > predictGenerate)
+			{
+				_sellPrice =Ulti.round( _sellPrice *0.7f);
+				while(!retailersAcceptProposal[i])
+				{
+					if(responsed)
+					{
+						if(_buyPrice > proposals[i].getBuyPrice()*0.7f)
+						{
+							_buyPrice = Ulti.round(_buyPrice*0.9f);
+						}
+						else 
+						{
+							_sellPrice = Ulti.round(_sellPrice*1.1f);
+							_buyPrice = Ulti.round(proposals[i].getBuyPrice()*0.9f);
+						}
+						gui.SendMessage("Negotiation", this.getLocalName(), retailerAgents[i], "Sell price: $" + _sellPrice + "/kwh" , "Buy price: $" + _buyPrice + "/kwh", this);
+						Negotiate(retailerAgents[i], _buyPrice, _sellPrice);
+						responsed = false;
+					}
+					receiveBehaviour().action();
+				}
+			}
+			else 
+			{
+				_buyPrice = Ulti.round(_buyPrice *1.3f);
+				while(!retailersAcceptProposal[i])
+				{
+					if(responsed)
+					{
+						if(_sellPrice < proposals[i].getSellPrice()*1.3f)
+						{
+							_sellPrice = Ulti.round(_sellPrice*1.1f);
+						}
+						else 
+						{
+							_buyPrice = Ulti.round(_buyPrice*0.9f);
+							_sellPrice = Ulti.round(proposals[i].getSellPrice()*1.1f);
+						}
+						gui.SendMessage("Negotiation", this.getLocalName(), retailerAgents[i], "Sell price: $" + _sellPrice + "/kwh" , "Buy price: $" + _buyPrice + "/kwh", this);
+						Negotiate(retailerAgents[i], _buyPrice, _sellPrice);
+						responsed = false;
+					}
+					receiveBehaviour().action();
+				}
+			}
+			if(_sellPrice > proposals[i].getSellPrice())
+				_sellPrice =  proposals[i].getSellPrice();
+			if(_buyPrice < proposals[i].getBuyPrice())
+				_buyPrice =  proposals[i].getBuyPrice();
+			finalProposals[i] = new Proposal(retailerAgents[i], _sellPrice, _buyPrice);
+			gui.UpdateRetailerValues(retailerAgents[i], finalProposals[i].getSellPrice(), finalProposals[i].getBuyPrice());
+			System.out.println("Final proposal Sell price: $" + _sellPrice + "/kwh | Buy price: $" + _buyPrice + "/kwh");
+			System.out.println("------------------------------------");
+		}
+		
+		return GetBestProposal(finalProposals);
+	}
+	
+	private Proposal GetBestProposal(Proposal[] finalProposals)
+	{
 		Proposal bestProposal = finalProposals[1];
 		double profit = home.getTotalConsume()*finalProposals[1].getSellPrice() + home.getTotalGenerate()*finalProposals[1].getBuyPrice();
 		for (Proposal proposal : finalProposals)
@@ -366,17 +459,6 @@ public class HomeAgent extends Agent
 				bestProposal = proposal;
 			}
 		}
-		home.SetProposal(bestProposal);
-		gui.UpdateContract(bestProposal.getRetailerName());
-		double predictedExpense = totalPredictUsage*bestProposal.getSellPrice();
-		double predictedIncome = totalPredictGenerate*bestProposal.getBuyPrice();
-		gui.SetPredictedIncome(predictedIncome, predictedExpense);
-		
-		System.out.println("Choose proposal: " + bestProposal.getRetailerName());
-		ResetRetailerQuoteAccpetStatus();
-		home.reset();
-		System.out.println("--------------------------------------------------------------------------------");
-		System.out.println("--------------------------------------------------------------------------------");
-		requestAppliancesUsage(0);
+		return bestProposal;
 	}
 }
