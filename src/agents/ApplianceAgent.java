@@ -100,7 +100,7 @@ public class ApplianceAgent extends Agent
 		msg.addReceiver(new AID(homeAgentName, AID.ISLOCALNAME));
 		msg.setProtocol(FIPAProtocolNames.FIPA_QUERY);
 		
-		Double predictedConsume = records.GetAverageUsage();
+		Double predictedConsume = records.PredictUsage();
 		msg.setContent("predict," + predictedConsume);
 		String s = "Generated ";
 		if(predictedConsume < 0)
