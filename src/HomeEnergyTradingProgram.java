@@ -1,10 +1,10 @@
+import java.util.Vector;
+
 import gui.Home1;
-import jade.core.Agent;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.wrapper.AgentController;
-import jade.wrapper.ContainerController;
 import models.Appliance;
 import models.Home;
 import models.Retailer;
@@ -37,7 +37,7 @@ public class HomeEnergyTradingProgram
 		retailerProfile.setParameter(Profile.CONTAINER_NAME, "RetailerContainer");
 		jade.wrapper.AgentContainer retailerContainer = rt.createAgentContainer(retailerProfile);
 		
-		
+		Home1 gui = new Home1();
 		Appliance appliances[] = {
 				new Appliance("SolarPanel", 5, false),
 				new Appliance("AirConditioner", -2f,false),
@@ -50,17 +50,19 @@ public class HomeEnergyTradingProgram
 				new Retailer("EnergyAustralia",0.32f,0.23f,true)
 		};
 		
-		Object[][] applianceArgs = new Object[3][2];
-		Object[][] retailerArgs = new Object[3][2];
+		Object[][] applianceArgs = new Object[3][3];
+		Object[][] retailerArgs = new Object[3][3];
 		Home home = new Home();
 		Object[] homeArg = new Object[4];
 		homeArg[0] = home;
 		for (int i = 0; i < 3; i++)
 		{
 			applianceArgs[i][0] = appliances[i];
-			applianceArgs[i][1] = "HomeAgent1";
+			applianceArgs[i][1] = "HomeAgent";
+			applianceArgs[i][2] = gui;
 			retailerArgs[i][0] = retailers[i];
-			retailerArgs[i][1] = "HomeAgent1";
+			retailerArgs[i][1] = "HomeAgent";
+			retailerArgs[i][2] = gui;
 		}
 		
 		//add retailers name into home arguments
@@ -85,7 +87,7 @@ public class HomeEnergyTradingProgram
 		AgentController hc;
 		
 		//initialize GUI and pass to home agent
-		Home1 gui = new Home1();
+		
 		homeArg[3] = gui;
 		gui.setVisible(true);
 		try
@@ -97,8 +99,7 @@ public class HomeEnergyTradingProgram
 				ac.start();
 				rc.start();
 			}
-			hc = homeContainer.createNewAgent("HomeAgent1", "agents.HomeAgent", homeArg);
-			
+			hc = homeContainer.createNewAgent("HomeAgent", "agents.HomeAgent", homeArg);
 			hc.start();
 		} catch (Exception e)
 		{
